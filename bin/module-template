@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+# perl -I../lib try.pl
+use strict;
+use warnings;
+
+use App::Module::Template;
+
+App::Module::Template->run(@ARGV);
