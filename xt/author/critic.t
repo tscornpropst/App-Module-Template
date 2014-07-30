@@ -6,11 +6,6 @@ use warnings;
 use File::Spec;
 use Test::More;
 
-if ( not $ENV{AUTHOR_TESTING} ) {
-    my $msg = "Author test. Set $ENV{AUTHOR_TESTING} to a true value to run.";
-    plan( skip_all => $msg );
-}
-
 eval { require Test::Perl::Critic; };
 
 if ( $@ ) {
