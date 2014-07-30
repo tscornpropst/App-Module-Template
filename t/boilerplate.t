@@ -1,5 +1,5 @@
 #!perl -T
-use 5.006;
+use 5.016;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
@@ -50,7 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/MS/Sample.pm');
+  module_boilerplate_ok('lib/App/Module/Template.pm');
 
 
 }
