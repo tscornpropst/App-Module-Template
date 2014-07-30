@@ -3,7 +3,7 @@ use warnings;
 
 use 5.016;
 
-use ExtUtils::MakeMaker 6.30;
+use ExtUtils::MakeMaker 6.63;
 
 my %WriteMakefileArgs = (
     NAME                  => 'App::Module::Template',
@@ -11,13 +11,13 @@ my %WriteMakefileArgs = (
     VERSION_FROM          => 'lib/App/Module/Template.pm',
     ABSTRACT_FROM         => 'lib/App/Module/Template.pm',
     LICENSE               => 'artistic2',
-    BUILD_REQUIRES        => {},
+    DISTNAME              => 'App-Module-Template',
     MIN_PERL_VERSION      => 5.016,
-    CONFIGURE_REQUIRES    => {
-        'ExtUtils::MakeMaker' => 0,
-    },
     BUILD_REQUIRES        => {
-        'Test::More'      => 0,
+        'ExtUtils::MakeMaker' => 6.63,
+    },
+    CONFIGURE_REQUIRES    => {
+        'ExtUtils::MakeMaker' => 6.63,
     },
     PREREQ_PM             => {
         'Carp'            => 0,
@@ -31,11 +31,11 @@ my %WriteMakefileArgs = (
         'POSIX'           => 0,
         'Template'        => 0,
     },
-    DISTNAME              => 'App-Module-Template',
-    EXE_FILES             => ['bin/module-template'],
-    PL_FILES              => {},
+    TEST_REQUIRES         => {
+        'Test::More'      => 0
+    },
+    EXE_FILES             => ['script/module-template'],
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'App-Module-Template-*' },
     test => { TESTS => "t/*.t" },
 );
 
