@@ -34,9 +34,9 @@ my %WriteMakefileArgs = (
     TEST_REQUIRES         => {
         'Test::More'      => 0
     },
-    EXE_FILES             => ['script/module-template'],
-    dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    test => { TESTS => "t/*.t" },
+    EXE_FILES             => ['bin/module-template'],
+    dist                  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    test                  => { TESTS => "t/*.t" },
 );
 
 my %FallbackPrereqs = (
