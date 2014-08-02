@@ -32,14 +32,14 @@ sub run {
     getopts('t:c:', \%opt);
 
     my $module   = $ARGV[0] || prompt();
-    my $dist     = $module; $dist =~ s/::/-/g;
-    my $file     = $module; $file =~ s/.*:://; $file .= ".pm";
+    my $dist     = $module; $dist =~ s/::/-/gmsx;
+    my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
     $cwd      = File::Spec->catfile( cwd(), $dist );
 
     my ($r, $msg) = validate_module_name($module);
 
     unless ( $r ) {
-        say "$msg; exiting...";
+        print "$msg; exiting...\n";
         exit();
     }
 
@@ -118,7 +118,7 @@ sub run {
 sub fix_module_path {
     my ($module, $file) = @_;
 
-    my @dirs = split( /::/, $module );
+    my @dirs = split( /::/msx, $module );
 
     # remove the last part of the module name because that will be the filename
     pop @dirs;
@@ -142,10 +142,11 @@ sub process_files {
 
     # grab the directory name to be handled by dir_sub()
     # This also ensures the directory exists before we write the file
-    my ($template, $src_directory, $suffix) = fileparse($src_file, qr/\.swp/);
+    my ($template, $src_directory, $suffix) =
+        fileparse($src_file, qr/\.swp/msx);
 
     # skip swap files
-    return undef if $suffix eq '.swp';
+    return if $suffix eq '.swp';
 
     # call process_dirs() to create the destination directory
     my $dest_dir = process_dirs($src_directory);
@@ -174,8 +175,8 @@ sub process_dirs {
 
     # return undef here so we don't re-create the templates top-level dir
     # file_sub() will fix the path
-    return undef if $stub eq 'templates';
-    return undef if $stub eq '.module-template';
+    return if $stub eq 'templates';
+    return if $stub eq '.module-template';
 
     my $dest_dir = join q{/}, $cwd, $stub;
 
@@ -195,7 +196,7 @@ sub prompt {
     my $line = <STDIN>;
 
     chomp $line;
-    
+
     return $line;
 }
 
@@ -291,47 +292,47 @@ App::Module::Template - Perl module scaffolding with Template Toolkit
 
 This documentation refers to App::Module::Template version 0.01.
 
-=head1 USAGE
-
-    module-template Your::Module
-
-    module-template Your::Module -c /path/to/config
-
-    module-template Your::Module -t /path/to/templates
-
-=head1 REQUIRED ARGUMENTS
-
-The only required argument is a valid Perl module name.
-
-=head1 OPTIONS
-
-=over
-
-=item C<-c>
-
-=item C<-t>
-
-Must be an absolute path to the template directory
-
-=back
+=head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-=head1 REQUIREMENTS
+=head1 SUBROUTINES/METHODS
+
+=over
+
+=item C<run>
+
+=item C<dir_walk>
+
+=item C<fix_module_path>
+
+=item C<process_dirs>
+
+=item C<process_files>
+
+=item C<process_template>
+
+=item C<prompt>
+
+=item C<validate_module_name>
+
+=back
+
+=head1 EXAMPLES
 
 None.
 
 =head1 DIAGNOSTICS
 
-None.
+=over
 
-=head1 CONFIGURATION
+=item B<Error Message>
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
 
 App::Module::Template is configured by ~/.module-template/config.
-
-=head1 EXIT STATUS
-
-None.
 
 =head1 DEPENDENCIES
 
@@ -375,7 +376,7 @@ Please report any issues or feature requests to Trevor S. Cornpropst C<tscornpro
 
 Trevor S. Cornpropst
 
-=head1 COPYRIGHT AND LICENSE
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2014 Trevor S. Cornpropst C<< tscornpropst@gmail.com >>. All rights reserved.
 
