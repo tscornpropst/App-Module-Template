@@ -13,7 +13,7 @@ if ( $@ ) {
     plan( skip_all => $msg );
 }
 
-my $rcfile = File::Spec->catfile( 't', 'perlcritic.rc' );
+my $rcfile = File::Spec->catfile( 'xt/author', 'perlcritic.rc' );
 
 Test::Perl::Critic->import( -profile => $rcfile );
 
