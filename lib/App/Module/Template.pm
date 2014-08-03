@@ -7,6 +7,8 @@ use warnings;
 
 our $VERSION = '0.01';
 
+use base qw(Exporter);
+
 use Carp;
 use Config::General;
 use Cwd;
@@ -17,10 +19,19 @@ use File::Path;
 use File::Spec;
 use Getopt::Std;
 use POSIX qw(strftime);
-use Template;
 use Readonly;
+use Template;
+use Try::Tiny;
 
 Readonly::Scalar my $MAX_ARGS => 3;
+
+our (@EXPORT_OK, %EXPORT_TAGS);
+@EXPORT_OK = qw(
+    validate_module_name
+);
+%EXPORT_TAGS = (
+    ALL => [ @EXPORT_OK ],
+);
 
 my $cwd;
 my $tt2;
@@ -40,10 +51,10 @@ sub run {
     my $file   = $module; $file =~ s/.*:://msx; $file .= '.pm';
     $cwd       = File::Spec->catfile( cwd(), $dist );
 
-    my ($r, $msg) = validate_module_name($module);
-
-    unless ( $r ) {
-        print "$msg; exiting...\n";
+    try {
+        validate_module_name($module);
+    } catch {
+        say "$_\n\nmodule-template exiting...";
         exit();
     }
 
@@ -268,19 +279,19 @@ sub validate_module_name {
     my ($module_name) = @_;
 
     given ( $module_name ) {
-#        when ( $module_name =~ m/\A[A-Za-z]+\Z/msx ) {
-        when ( $module_name =~ m/\A[:alpha]+\Z/msx ) {
-            return 0, "'$module_name' is a top-level namespace";
+        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
+            croak "'$module_name' is a top-level namespace";
         }
-#        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
-        when ( $module_name =~ m/\A[:lower]+\:\:[:lower]+/msx ) {
-            return 0, "'$module_name' is an all lower-case namespace";
+        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+            croak "'$module_name' is an all lower-case namespace";
         }
-#        when ( $module_name =~ m/\A[A-Za-z]+(?:\:\:[A-Za-z]+)+\Z/msx ) {
-        when ( $module_name =~ m/\A[:alpha]+(?:\:\:[:alpha]+)+\Z/msx ) {
+        # module name conforms
+        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
             return 1;
         }
-        default { return; }
+        default {
+            croak "'$module_name' does not meet naming requirements";
+        }
     }
 
     return;
@@ -398,7 +409,11 @@ App::Module::Template is configured by ~/.module-template/config.
 
 =item * POSIX
 
+=item * Readonly
+
 =item * Template
+
+=item * Try::Tiny
 
 =back
 
