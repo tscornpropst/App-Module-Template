@@ -22,6 +22,7 @@ README
 README.md
 t/00-load.t
 t/01-load.t
+t/validate_module_name.t
 xt/author/critic.t
 xt/author/perlcritic.rc
 xt/author/pod-coverage.t
