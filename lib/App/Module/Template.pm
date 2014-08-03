@@ -1,6 +1,7 @@
 package App::Module::Template;
 
 use 5.016;
+
 use strict;
 use warnings;
 
@@ -17,6 +18,9 @@ use File::Spec;
 use Getopt::Std;
 use POSIX qw(strftime);
 use Template;
+use Readonly;
+
+Readonly::Scalar my $MAX_ARGS => 3;
 
 my $cwd;
 my $tt2;
@@ -31,10 +35,10 @@ sub run {
     # -c config file
     getopts('t:c:', \%opt);
 
-    my $module   = $ARGV[0] || prompt();
-    my $dist     = $module; $dist =~ s/::/-/gmsx;
-    my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
-    $cwd      = File::Spec->catfile( cwd(), $dist );
+    my $module = $ARGV[0] || prompt();
+    my $dist   = $module; $dist =~ s/::/-/gmsx;
+    my $file   = $module; $file =~ s/.*:://msx; $file .= '.pm';
+    $cwd       = File::Spec->catfile( cwd(), $dist );
 
     my ($r, $msg) = validate_module_name($module);
 
@@ -143,7 +147,8 @@ sub process_files {
     # grab the directory name to be handled by dir_sub()
     # This also ensures the directory exists before we write the file
     my ($template, $src_directory, $suffix) =
-        fileparse($src_file, qr/\.swp/msx);
+#        fileparse($src_file, qr/\.swp/msx);
+        fileparse($src_file, qr/[.]{1,1}swp\Z/msx);
 
     # skip swap files
     return if $suffix eq '.swp';
@@ -206,7 +211,7 @@ sub prompt {
 # Thanks MJD for Higher-Order Perl!
 #-------------------------------------------------------------------------------
 sub dir_walk {
-    unshift @_, undef if @_ < 3;
+    unshift @_, undef if @_ < $MAX_ARGS;
 
     my ($top, $filefunc, $dirfunc) = @_;
 
@@ -263,13 +268,16 @@ sub validate_module_name {
     my ($module_name) = @_;
 
     given ( $module_name ) {
-        when ( $module_name =~ m/\A[A-Za-z]+\Z/msx ) {
+#        when ( $module_name =~ m/\A[A-Za-z]+\Z/msx ) {
+        when ( $module_name =~ m/\A[:alpha]+\Z/msx ) {
             return 0, "'$module_name' is a top-level namespace";
         }
-        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+#        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+        when ( $module_name =~ m/\A[:lower]+\:\:[:lower]+/msx ) {
             return 0, "'$module_name' is an all lower-case namespace";
         }
-        when ( $module_name =~ m/\A[A-Za-z]+(?:\:\:[A-Za-z]+)+\Z/msx ) {
+#        when ( $module_name =~ m/\A[A-Za-z]+(?:\:\:[A-Za-z]+)+\Z/msx ) {
+        when ( $module_name =~ m/\A[:alpha]+(?:\:\:[:alpha]+)+\Z/msx ) {
             return 1;
         }
         default { return; }
@@ -294,7 +302,13 @@ This documentation refers to App::Module::Template version 0.01.
 
 =head1 SYNOPSIS
 
+    use App::Module::Template;
+
+    App::Module::Template->run(@ARGS);
+
 =head1 DESCRIPTION
+
+App::Module::Template is the module loaded by 'module-template'. The subroutines were for the script were abstracted to this module for testing. See module-template for usage.
 
 =head1 SUBROUTINES/METHODS
 
@@ -302,19 +316,35 @@ This documentation refers to App::Module::Template version 0.01.
 
 =item C<run>
 
+This function contains the main logic of the program. The script was abstracted here for testability.
+
 =item C<dir_walk>
+
+Recursive function to process all files in the module template directory.
 
 =item C<fix_module_path>
 
+Fixes module path to match the module naming convention.
+
 =item C<process_dirs>
+
+Function passed to dir_walk() to handle directories.
 
 =item C<process_files>
 
+Function passed to dir_walk() to handle files.
+
 =item C<process_template>
+
+Calls Template Toolkit to process the files in the module template directory.
 
 =item C<prompt>
 
+Displays a prompt when no module name is provided on the command line.
+
 =item C<validate_module_name>
+
+Validates input to ensure we have a valid Perl module name.
 
 =back
 
@@ -326,7 +356,17 @@ None.
 
 =over
 
-=item B<Error Message>
+=item B<Couldn't open directory $top $!; skipping.>
+
+A directory in the module template is unreadable. Check permissions.
+
+=item B<Template directory $template_dir does not exist>
+
+The default template directory or the directory at the -t path does not exist.
+
+=item B<Could not locate configuration file $config_file>
+
+The default configuration file or the file at -c does not exist.
 
 =back
 

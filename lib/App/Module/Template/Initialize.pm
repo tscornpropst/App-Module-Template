@@ -1,5 +1,7 @@
 package App::Module::Template::Initialize;
 
+use 5.016;
+
 use strict;
 use warnings;
 
