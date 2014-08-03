@@ -3,12 +3,8 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More;
+use Test::More tests => 1;
 
-plan tests => 1;
+use_ok( 'App::Module::Template' );
 
-BEGIN {
-    use_ok( 'App::Module::Template' ) || print "Bail out!\n";
-}
-
-diag( "Testing $App::Module::Template::VERSION, Perl $], $^X" );
+diag( "Testing App::Module::Template $App::Module::Template::VERSION, Perl $], $^X" );

@@ -3,12 +3,8 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More;
+use Test::More tests => 1;
 
-plan tests => 1;
-
-BEGIN {
-    use_ok( '[% module %]' ) || print "Bail out!\n";
-}
+use_ok( '[% module %]' );
 
 diag( "Testing [% module %] $[% module %]::VERSION, Perl $], $^X" );
