@@ -158,8 +158,7 @@ sub process_files {
     # grab the directory name to be handled by dir_sub()
     # This also ensures the directory exists before we write the file
     my ($template, $src_directory, $suffix) =
-#        fileparse($src_file, qr/\.swp/msx);
-        fileparse($src_file, qr/[.]{1,1}swp\Z/msx);
+        fileparse($src_file, qr/[.]{1,1}swp\z/msx);
 
     # skip swap files
     return if $suffix eq '.swp';
