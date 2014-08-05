@@ -1,12 +1,4 @@
-#===============================================================================
-#
-#         FILE: validate_module_name.t
-#
-#       AUTHOR: Trevor S. Cornpropst (tsc), tscornpropst@gmail.com
-#      VERSION: 1.0
-#      CREATED: 08/03/2014 12:43:55
-#     REVISION: ---
-#===============================================================================
+#!perl -T
 
 use strict;
 use warnings FATAL => 'all';
@@ -14,7 +6,7 @@ use warnings FATAL => 'all';
 use Test::More tests => 17;
 use Test::Exception;
 
-use_ok( 'App::Module::Template', 'validate_module_name');
+use_ok( 'App::Module::Template', 'validate_module_name' );
 
 ok(my $module_name = 'Valid::Module', 'set valid module name');
 

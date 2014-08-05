@@ -28,6 +28,8 @@ Readonly::Scalar my $MAX_ARGS => 3;
 our (@EXPORT_OK, %EXPORT_TAGS);
 @EXPORT_OK = qw(
     validate_module_name
+    get_module_dirs
+    get_module_fqfn
 );
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
@@ -107,12 +109,12 @@ sub run {
     unless ( (defined $cwd) and (-d $cwd) ) {
         mkpath($cwd);
 
-    if ( -d $cwd ) {
-        chdir $cwd;
-    }
-    else {
-        croak "Could not chdir to $cwd\n";
-    }
+        if ( -d $cwd ) {
+            chdir $cwd;
+        }
+        else {
+            croak "Could not chdir to $cwd\n";
+        }
     }
     else {
         print "Destination directory $cwd exists\n";
@@ -122,16 +124,23 @@ sub run {
 
     dir_walk($template_dir, \&process_files, \&process_dirs);
 
-    fix_module_path($module, $file);
+    my $dirs = get_module_dirs( $module );
+    my $fqfn = get_module_fqfn( $dirs, $file );
+
+    # create the module directory
+    mkpath( File::Spec->catdir( @{$dirs} ) );
+
+    # rename the template file with the module file name
+    move( File::Spec->catfile( 'lib', 'Module.pm' ), $fqfn );
 
     return 1;
 }
 
 #-------------------------------------------------------------------------------
-# Fixup the module filename and path.
+# split the module name into directories
 #-------------------------------------------------------------------------------
-sub fix_module_path {
-    my ($module, $file) = @_;
+sub get_module_dirs {
+    my ($module) = @_;
 
     my @dirs = split( /::/msx, $module );
 
@@ -140,13 +149,16 @@ sub fix_module_path {
 
     unshift @dirs, 'lib';
 
-    mkpath( File::Spec->catdir( @dirs ) );
+    return \@dirs;
+}
 
-    my $dest_file = File::Spec->catfile( @dirs, $file );
+#-------------------------------------------------------------------------------
+# create a path to the fully qualified file name
+#-------------------------------------------------------------------------------
+sub get_module_fqfn {
+    my ($dirs, $file_name) = @_;
 
-    move( File::Spec->catfile( 'lib', 'Module.pm' ), $dest_file );
-
-    return $dest_file;
+    return File::Spec->catfile( @{$dirs}, $file_name );
 }
 
 #-------------------------------------------------------------------------------
@@ -332,9 +344,13 @@ This function contains the main logic of the program. The script was abstracted 
 
 Recursive function to process all files in the module template directory.
 
-=item C<fix_module_path>
+=item C<get_module_dirs>
 
-Fixes module path to match the module naming convention.
+Return an array reference of directory parts from the module name.
+
+=item C<get_module_fqfn>
+
+Return the fully qualified file name for the module.
 
 =item C<process_dirs>
 
