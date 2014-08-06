@@ -20,8 +20,25 @@ Makefile.PL
 MANIFEST			This list of files
 README
 README.md
+t/.module-template/config
+t/.module-template/templates/bin/app.pl
+t/.module-template/templates/Changes
+t/.module-template/templates/lib/Module.pm
+t/.module-template/templates/LICENSE
+t/.module-template/templates/Makefile.PL
+t/.module-template/templates/MANIFEST
+t/.module-template/templates/README
+t/.module-template/templates/t/00-load.t
+t/.module-template/templates/xt/author/critic.t
+t/.module-template/templates/xt/author/perlcritic.rc
+t/.module-template/templates/xt/author/pod-coverage.t
+t/.module-template/templates/xt/release/pod-syntax.t
 t/00-load.t
 t/01-load.t
+t/get_module_dirs.t
+t/get_module_fqfn.t
+t/process_dirs.t
+t/process_files.t
 t/validate_module_name.t
 xt/author/critic.t
 xt/author/perlcritic.rc

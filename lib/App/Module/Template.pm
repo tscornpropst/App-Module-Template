@@ -30,13 +30,16 @@ our (@EXPORT_OK, %EXPORT_TAGS);
     validate_module_name
     get_module_dirs
     get_module_fqfn
+    prompt
+    process_template
+    process_files
+    process_dirs
+    dirwalk
 );
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
 );
 
-my $cwd;
-my $tt2;
 my $tmpl_vars;
 
 #-------------------------------------------------------------------------------
@@ -51,7 +54,7 @@ sub run {
     my $module = $ARGV[0] || prompt();
     my $dist   = $module; $dist =~ s/::/-/gmsx;
     my $file   = $module; $file =~ s/.*:://msx; $file .= '.pm';
-    $cwd       = File::Spec->catfile( cwd(), $dist );
+    my $cwd    = File::Spec->catfile( cwd(), $dist );
 
     try {
         validate_module_name($module);
@@ -67,6 +70,9 @@ sub run {
     }
     else {
         $template_dir  = join q{/}, File::HomeDir->my_home(), '.module-template/templates';
+
+        #TODO
+        # initialize template dir here
     }
 
     die "Template directory $template_dir does not exist\n"
@@ -94,11 +100,11 @@ sub run {
             -UTF8                  => 1,
     )->getall() or croak "could not read configuration file $config_file\n";
 
-    my $tt_conf = $cfg{template_toolkit};
+    my $tt2 = Template->new( $cfg{template_toolkit} )
+        or croak Template->error();
 
+    # don't need this in the $tmpl_vars
     delete $cfg{template_toolkit};
-
-    $tt2 = Template->new( $tt_conf ) or croak Template->error();
 
     # Template Vars
     $tmpl_vars = \%cfg;
@@ -122,7 +128,7 @@ sub run {
         exit();
     }
 
-    dir_walk($template_dir, \&process_files, \&process_dirs);
+    dir_walk($tt2, $template_dir, \&process_files, \&process_dirs);
 
     my $dirs = get_module_dirs( $module );
     my $fqfn = get_module_fqfn( $dirs, $file );
@@ -134,6 +140,48 @@ sub run {
     move( File::Spec->catfile( 'lib', 'Module.pm' ), $fqfn );
 
     return 1;
+}
+
+#-------------------------------------------------------------------------------
+# Prompt the user for a module name if they omit from the command line
+#-------------------------------------------------------------------------------
+sub prompt {
+    print 'module-template - Enter module name> ';
+
+    my $line = <>;
+
+    chomp $line;
+
+    return $line;
+}
+
+#-------------------------------------------------------------------------------
+# Validate the module naming convention
+#
+# 1. No top-level namespaces
+# 2. No all lower case names
+# 3. Match XXX::XXX
+#-------------------------------------------------------------------------------
+sub validate_module_name {
+    my ($module_name) = @_;
+
+    given ( $module_name ) {
+        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
+            croak "'$module_name' is a top-level namespace";
+        }
+        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+            croak "'$module_name' is an all lower-case namespace";
+        }
+        # module name conforms
+        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
+            return 1;
+        }
+        default {
+            croak "'$module_name' does not meet naming requirements";
+        }
+    }
+
+    return;
 }
 
 #-------------------------------------------------------------------------------
@@ -165,7 +213,7 @@ sub get_module_fqfn {
 # callback to pass to dir_walk to handle files
 #-------------------------------------------------------------------------------
 sub process_files {
-    my ($src_file) = @_;
+    my ($tt2, $src_file) = @_;
 
     # grab the directory name to be handled by dir_sub()
     # This also ensures the directory exists before we write the file
@@ -180,14 +228,15 @@ sub process_files {
 
     # $dest_dir will be undef if it is the parent template directory so,
     # we set it to the current working directory
+    my $cwd = cwd;
     $dest_dir = $cwd unless defined $dest_dir;
 
     my $dest_file = join q{/}, $dest_dir, $template;
 
     # process the template and write the output
-    process_template($src_file, $tmpl_vars, $dest_file);
+    process_template($tt2, $src_file, $tmpl_vars, $dest_file);
 
-    return;
+    return $dest_file;
 }
 
 #-------------------------------------------------------------------------------
@@ -205,6 +254,7 @@ sub process_dirs {
     return if $stub eq 'templates';
     return if $stub eq '.module-template';
 
+    my $cwd = cwd;
     my $dest_dir = join q{/}, $cwd, $stub;
 
     unless ( -d $dest_dir ) {
@@ -215,95 +265,42 @@ sub process_dirs {
 }
 
 #-------------------------------------------------------------------------------
-# Prompt the user for a module name if they omit from the command line
-#-------------------------------------------------------------------------------
-sub prompt {
-    print 'module-template - Module Name> ';
-
-    my $line = <STDIN>;
-
-    chomp $line;
-
-    return $line;
-}
-
-#-------------------------------------------------------------------------------
-# Recursive currying function to walk a directory of files.
-#
-# Thanks MJD for Higher-Order Perl!
+# Recurse directory to process all templates
 #-------------------------------------------------------------------------------
 sub dir_walk {
-    unshift @_, undef if @_ < $MAX_ARGS;
+    my ($tt2, $top, $filefunc, $dirfunc) = @_;
 
-    my ($top, $filefunc, $dirfunc) = @_;
+    my $DIR;
 
-    my $r;
-
-    $r = sub {
-        my $DIR;
-        my $top = shift;
-
-        if ( -d $top ) {
-            my $file;
-
-            unless (opendir $DIR, $top) {
-                carp "Couldn't open directory $top $!; skipping.\n";
-                return;
-            }
-
-            my @results;
-
-            while ($file = readdir $DIR) {
-                next if $file eq '.' || $file eq '..';
-                push @results, $r->("$top/$file");
-            }
-
-            return $dirfunc->($top, @results);
+    if (-d $top) {
+        unless (opendir $DIR, $top) {
+            carp "Couldn't open directory $top $!; skipping.\n";
+            return;
         }
-        else {
-            return $filefunc->($top);
-        }
-    };
 
-    return defined($top) ? $r->($top) : $r;
+        my @results;
+
+        while (my $file = readdir $DIR) {
+            next if $file eq '.' || $file eq '..';
+            push @results, dir_walk($tt2, "$top/$file", $filefunc, $dirfunc);
+        }
+
+        return $dirfunc->($top, @results);
+    }
+    else {
+        return $filefunc->($tt2, $top);
+    }
+
+    return;
 }
 
 #-------------------------------------------------------------------------------
 # $tt2->process($template, $tmpl_vars, $output);
 #-------------------------------------------------------------------------------
 sub process_template {
-    my (@args) = @_;
+    my ($tt2, @args) = @_;
 
     $tt2->process(@args) or croak $tt2->error();
-
-    return;
-}
-
-#-------------------------------------------------------------------------------
-# Validate the module naming convention
-#
-# 1. No top-level namespaces
-# 2. No all lower case names
-# 3. Match XXX::XXX
-#-------------------------------------------------------------------------------
-sub validate_module_name {
-    my ($module_name) = @_;
-
-    given ( $module_name ) {
-        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
-            croak "'$module_name' is a top-level namespace";
-        }
-        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
-            croak "'$module_name' is an all lower-case namespace";
-        }
-        # module name conforms
-        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
-            return 1;
-        }
-        default {
-            croak "'$module_name' does not meet naming requirements";
-        }
-    }
 
     return;
 }
