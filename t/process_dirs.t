@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 use_ok( 'App::Module::Template', 'process_dirs' );
 
@@ -20,3 +20,5 @@ ok( -d $test_dir, 'test directory exists' );
 ok( rmdir $test_dir, 'removing test dir' );
 
 is( -d $test_dir, undef, 'test directory does not exist' );
+
+is( process_dirs('.module-template'), undef, 'process dirs skips .module-template' );
