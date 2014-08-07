@@ -30,13 +30,14 @@ my %WriteMakefileArgs = (
         'File::Spec'      => 0,
         'Getopt::Std'     => 0,
         'POSIX'           => 0,
-        'Readonly'        => 0,
         'Template'        => 0,
         'Try::Tiny'       => 0,
     },
     TEST_REQUIRES         => {
+        'Cwd'             => 0,
+        'Template'        => 0,
         'Test::More'      => 0,
-        'Test::Exception' => 0
+        'Test::Exception' => 0,
     },
     EXE_FILES             => ['bin/module-template'],
     dist                  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
@@ -54,7 +55,6 @@ my %FallbackPrereqs = (
     'File::Spec'      => 0,
     'Getopt::Std'     => 0,
     'POSIX'           => 0,
-    'Readonly'        => 0,
     'Template'        => 0,
     'Try::Tiny'       => 0,
 );

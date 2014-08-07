@@ -19,11 +19,8 @@ use File::Path;
 use File::Spec;
 use Getopt::Std;
 use POSIX qw(strftime);
-use Readonly;
 use Template;
 use Try::Tiny;
-
-Readonly::Scalar my $MAX_ARGS => 3;
 
 our (@EXPORT_OK, %EXPORT_TAGS);
 @EXPORT_OK = qw(
