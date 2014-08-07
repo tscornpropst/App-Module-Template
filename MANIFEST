@@ -1,16 +1,4 @@
-.module-template/config
-.module-template/templates/bin/app.pl
-.module-template/templates/Changes
-.module-template/templates/lib/Module.pm
-.module-template/templates/LICENSE
-.module-template/templates/Makefile.PL
-.module-template/templates/MANIFEST
-.module-template/templates/README
-.module-template/templates/t/00-load.t
-.module-template/templates/xt/author/critic.t
-.module-template/templates/xt/author/perlcritic.rc
-.module-template/templates/xt/author/pod-coverage.t
-.module-template/templates/xt/release/pod-syntax.t
+.travis.yml
 bin/module-template
 Changes
 lib/App/Module/Template.pm
@@ -39,6 +27,7 @@ t/get_module_dirs.t
 t/get_module_fqfn.t
 t/process_dirs.t
 t/process_files.t
+t/prompt.test
 t/validate_module_name.t
 xt/author/critic.t
 xt/author/perlcritic.rc

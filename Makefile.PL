@@ -28,8 +28,11 @@ my %WriteMakefileArgs = (
         'File::HomeDir'   => 0,
         'File::Path'      => 0,
         'File::Spec'      => 0,
+        'Getopt::Std'     => 0,
         'POSIX'           => 0,
+        'Readonly'        => 0,
         'Template'        => 0,
+        'Try::Tiny'       => 0,
     },
     TEST_REQUIRES         => {
         'Test::More'      => 0,
@@ -49,8 +52,11 @@ my %FallbackPrereqs = (
     'File::HomeDir'   => 0,
     'File::Path'      => 0,
     'File::Spec'      => 0,
+    'Getopt::Std'     => 0,
     'POSIX'           => 0,
+    'Readonly'        => 0,
     'Template'        => 0,
+    'Try::Tiny'       => 0,
 );
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
