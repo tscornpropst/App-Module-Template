@@ -31,6 +31,7 @@ our (@EXPORT_OK, %EXPORT_TAGS);
     process_template
     prompt
     validate_module_name
+    _module_path_exists
 );
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
@@ -183,6 +184,17 @@ sub validate_module_name {
 }
 
 #-------------------------------------------------------------------------------
+sub _module_path_exists {
+    my ($module_path) = @_;
+
+    if ( ( defined $module_path ) and ( -d $module_path ) ) {
+        return 1;
+    }
+
+    return;
+}
+
+#-------------------------------------------------------------------------------
 # Split the module name into directories
 #-------------------------------------------------------------------------------
 sub get_module_dirs {
@@ -282,7 +294,7 @@ This documentation refers to App::Module::Template version 0.01.
 
 =head1 DESCRIPTION
 
-App::Module::Template is the module loaded by 'module-template'. The subroutines were for the script were abstracted to this module for testing. See module-template for usage.
+App::Module::Template contains the subroutines to support 'module-template'. See module-template for usage.
 
 =head1 SUBROUTINES/METHODS
 
@@ -290,7 +302,7 @@ App::Module::Template is the module loaded by 'module-template'. The subroutines
 
 =item C<run>
 
-This function contains the main logic of the program. The script was abstracted here for testability.
+This function contains the main logic of the program.
 
 =item C<get_module_dirs>
 
