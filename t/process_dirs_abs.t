@@ -10,7 +10,7 @@ use Cwd;
 use File::Path qw/remove_tree make_path/;
 use Template;
 
-use_ok( 'App::Module::Template', 'process_dirs' );
+use_ok( 'App::Module::Template', '_process_dirs' );
 
 ok( my $abs_tmpl_path = join( q{/}, cwd, 't/.module-template/templates' ), 'set template path' );
 
@@ -26,13 +26,13 @@ ok( make_path($cant_read), 'create cant_read' );
 
 ok( chmod(oct(0400), $cant_read), 'make cant_read unreadable' );
 
-throws_ok{ process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $cant_read) } qr/\ACouldn't open directory/, 'process_files() fails on unreadable template path';
+throws_ok{ _process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $cant_read) } qr/\ACouldn't open directory/, 'process_files() fails on unreadable template path';
 
 ok( remove_tree($cant_read), 'removing cant_read path' );
 
 is( -d $cant_read, undef, 'cant_read path is removed' );
 
-ok( process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $abs_tmpl_path), 'process_dirs() w/ absolute paths' );
+ok( _process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $abs_tmpl_path), '_process_dirs() w/ absolute paths' );
 
 ok( -d "$abs_output_path/bin", 'bin exists' );
 ok( -d "$abs_output_path/lib", 'bin exists' );

@@ -9,7 +9,7 @@ use Cwd;
 use File::Path qw/remove_tree/;
 use Template;
 
-use_ok( 'App::Module::Template', 'process_dirs' );
+use_ok( 'App::Module::Template', '_process_dirs' );
 
 ok( my $rel_tmpl_path = './t/.module-template/templates', 'set relative template path' );
 
@@ -19,7 +19,7 @@ ok( my $rel_tt2 = Template->new({RELATIVE => 1, OUTPUT_PATH => $rel_output_path}
 
 ok( my $tmpl_vars = {}, 'set $tmpl_vars' );
 
-ok( process_dirs($rel_tt2, $tmpl_vars, $rel_tmpl_path, $rel_tmpl_path), 'process_dirs() w/ relative paths' );
+ok( _process_dirs($rel_tt2, $tmpl_vars, $rel_tmpl_path, $rel_tmpl_path), '_process_dirs() w/ relative paths' );
 
 ok( -d "$rel_output_path/bin", 'bin exists' );
 ok( -d "$rel_output_path/lib", 'bin exists' );

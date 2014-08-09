@@ -24,13 +24,14 @@ use Try::Tiny;
 
 our (@EXPORT_OK, %EXPORT_TAGS);
 @EXPORT_OK = qw(
-    get_module_dirs
-    get_module_fqfn
-    process_dirs
-    process_file
-    process_template
-    prompt
-    validate_module_name
+    run
+    _get_module_dirs
+    _get_module_fqfn
+    _process_dirs
+    _process_file
+    _process_template
+    _prompt
+    _validate_module_name
     _module_path_exists
 );
 %EXPORT_TAGS = (
@@ -46,14 +47,14 @@ sub run {
     # -c config file
     getopts('t:c:', \%opt);
 
-    my $module   = $ARGV[0] || prompt();
+    my $module   = $ARGV[0] || _prompt();
     my $dist     = $module; $dist =~ s/::/-/gmsx;
     my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
     my $dist_dir = File::Spec->catfile( cwd(), $dist );
     my $tmpl_vars;
 
     try {
-        validate_module_name($module);
+        _validate_module_name($module);
     } catch {
         say "$_\n\nmodule-template exiting...";
         exit();
@@ -122,15 +123,15 @@ sub run {
         exit();
     }
 
-    process_dirs($tt2, $tmpl_vars, $template_dir, $template_dir);
+    _process_dirs($tt2, $tmpl_vars, $template_dir, $template_dir);
 
-    my $dirs = get_module_dirs( $module );
+    my $dirs = _get_module_dirs( $module );
 
     # add the distribution dir to the front so our module ends up in the
     # right place
     unshift @{$dirs}, $dist_dir;
 
-    my $fqfn = get_module_fqfn( $dirs, $file );
+    my $fqfn = _get_module_fqfn( $dirs, $file );
 
     # create the module directory
     mkpath( File::Spec->catdir( @{$dirs} ) );
@@ -144,7 +145,7 @@ sub run {
 #-------------------------------------------------------------------------------
 # Prompt the user for a module name if they omit from the command line
 #-------------------------------------------------------------------------------
-sub prompt {
+sub _prompt {
     print 'module-template - Enter module name> ';
 
     my $line = <>;
@@ -161,7 +162,7 @@ sub prompt {
 # 2. No all lower case names
 # 3. Match XXX::XXX
 #-------------------------------------------------------------------------------
-sub validate_module_name {
+sub _validate_module_name {
     my ($module_name) = @_;
 
     given ( $module_name ) {
@@ -197,7 +198,7 @@ sub _module_path_exists {
 #-------------------------------------------------------------------------------
 # Split the module name into directories
 #-------------------------------------------------------------------------------
-sub get_module_dirs {
+sub _get_module_dirs {
     my ($module) = @_;
 
     my @dirs = split( /::/msx, $module );
@@ -213,7 +214,7 @@ sub get_module_dirs {
 #-------------------------------------------------------------------------------
 # Return the path to the fully qualified file name
 #-------------------------------------------------------------------------------
-sub get_module_fqfn {
+sub _get_module_fqfn {
     my ($dirs, $file_name) = @_;
 
     return File::Spec->catfile( @{$dirs}, $file_name );
@@ -222,7 +223,7 @@ sub get_module_fqfn {
 #-------------------------------------------------------------------------------
 # Walk the template directory
 #-------------------------------------------------------------------------------
-sub process_dirs {
+sub _process_dirs {
     my ($tt2, $tmpl_vars, $template_dir, $source) = @_;
 
     if ( -d $source ) {
@@ -238,15 +239,15 @@ sub process_dirs {
             # File::Spec->catfile() is too helpful here, goin' old school
             my $target = "$source/$file";
 
-            process_dirs($tt2, $tmpl_vars, $template_dir, $target);
+            _process_dirs($tt2, $tmpl_vars, $template_dir, $target);
         }
 
         closedir $dir;
     }
     else {
-        my $output = process_file($template_dir, $source);
+        my $output = _process_file($template_dir, $source);
 
-        process_template($tt2, $tmpl_vars, $source, $output);
+        _process_template($tt2, $tmpl_vars, $source, $output);
     }
 
     return $source;
@@ -255,7 +256,7 @@ sub process_dirs {
 #-------------------------------------------------------------------------------
 # Return the output path for TT2
 #-------------------------------------------------------------------------------
-sub process_file {
+sub _process_file {
     my ($template_dir, $source_file) = @_;
 
     my ($stub) = $source_file =~ m{\A$template_dir/(.*)\z}mosx;
@@ -264,7 +265,7 @@ sub process_file {
 }
 
 #-------------------------------------------------------------------------------
-sub process_template {
+sub _process_template {
     my ($tt2, $tmpl_vars, $template, $output) = @_;
 
     $tt2->process($template, $tmpl_vars, $output) or croak $tt2->error();
@@ -302,57 +303,7 @@ App::Module::Template contains the subroutines to support 'module-template'. See
 
 =item C<run>
 
-This function contains the main logic of the program.
-
-=item C<get_module_dirs>
-
-Return an array reference of directory parts from the module name.
-
-=item C<get_module_fqfn>
-
-Return the fully qualified file name for the module.
-
-=item C<process_dirs>
-
-Recursive function to walk the template directory and send templates to process_template().
-
-=item C<process_file>
-
-Return the output file path for use by process_template().
-
-=item C<process_template>
-
-Calls Template Toolkit to process the files in the module template directory.
-
-=item C<prompt>
-
-Displays a prompt when no module name is provided on the command line.
-
-=item C<validate_module_name>
-
-Validates input to ensure we have a valid Perl module name.
-
-=back
-
-=head1 EXAMPLES
-
-None.
-
-=head1 DIAGNOSTICS
-
-=over
-
-=item B<Couldn't open directory $directory_name $!; skipping.>
-
-A directory in the module template is unreadable. Check permissions.
-
-=item B<Template directory $template_dir does not exist>
-
-The default template directory or the directory at the -t path does not exist.
-
-=item B<Could not locate configuration file $config_file>
-
-The default configuration file or the file at -c does not exist.
+This function is called by module-template to execute logic of the program.
 
 =back
 

@@ -24,6 +24,7 @@ t/00-load.t
 t/01-load.t
 t/get_module_dirs.t
 t/get_module_fqfn.t
+t/module_path_exists.t
 t/process_dirs_abs.t
 t/process_dirs_rel.t
 t/process_file_abs.t
