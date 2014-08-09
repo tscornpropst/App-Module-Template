@@ -2,6 +2,8 @@
 
 Yet Another Perl Module Starter...
 
+[![Build Status](https://travis-ci.org/tscornpropst/App-Module-Template.svg?branch=master)](https://travis-ci.org/tscornpropst/App-Module-Template)
+
 Do we need another Perl module create? Probably not. But, here you go.
 
 __App::Module::Template__ is the guts to **_module-template_**, a command line utility to create a Perl project directory based off a template directory you define. **module-template** will initialize the directory for you the first time you run the program. The rest is up to you.
