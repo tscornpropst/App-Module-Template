@@ -1,18 +1,37 @@
-perl5-app-module-template
-=========================
+# App::Module::Template
 
-Yet Another Perl Module Starter
+Yet Another Perl Module Starter...
 
-App::Module::Template
+Do we need another Perl module create? Probably not. But, here you go.
 
-Do we need another Perl module create? Probably not. But, this is my take on it.
+__App::Module::Template__ is the guts to **_module-template_**, a command line utility to create a Perl project directory based off a template directory you define. **module-template** will initialize the directory for you the first time you run the program. The rest is up to you.
 
-I wanted a tool that would do exactly what I wanted with minimal fuss. The idea is to layout a directory as a template with all of the files just as you like. The files are Template Toolkit templates that get their values populated from a config file.
+When you run **module-template**, it looks for your template directory and config file in $HOME/.module-template. You can override these locations with command line options. Any values set in your config file will appear in your templates. Every template will get processed into a new directory matching your module name in the exact location as your template. Files with no template markup are copied over to their relevant location in your project directory.
 
-When you run 'module-template', it looks for your template directory and config file in $HOME/.module-template. Any values set in your config file will appear in your templates. Every template will get processed into a new directory matching your module name in the exact location as your template. Easy.
+## USAGE
 
-CONFIGURATION
--------------
+Normal usage
+
+```
+module-template My::Module
+```
+
+Prompts you for a module name if you don't provide one
+
+```
+module-template
+module-template - Enter module name>
+module-template - Enter module name> My::Module
+```
+
+Doesn't work because my::module is not a valid perl module name
+
+```
+module-template my::module
+```
+
+
+## CONFIGURATION
 
 Edit $HOME/.module-template/config.
 
@@ -28,8 +47,7 @@ license_type = Artistic_2_0
 ```
 
 
-INSTALL
--------
+## INSTALL
 
 To install this module, run the following commands:
 
@@ -38,12 +56,11 @@ To install this module, run the following commands:
   make test
   make install
 
-DEPENDENCIES
-------------
+## DEPENDENCIES
 
-This application requires Perl 5.16 or greater.
+Perl 5.16 or greater.
 
-this application depends on Template Toolkit.
+Template Toolkit
 
 COPYRIGHT AND LICENSE
 

@@ -25,14 +25,17 @@ use Try::Tiny;
 our (@EXPORT_OK, %EXPORT_TAGS);
 @EXPORT_OK = qw(
     run
+    _get_config
+    _get_config_path
     _get_module_dirs
     _get_module_fqfn
+    _get_template_path
+    _module_path_exists
     _process_dirs
     _process_file
     _process_template
     _prompt
     _validate_module_name
-    _module_path_exists
 );
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
@@ -58,70 +61,35 @@ sub run {
     } catch {
         say "$_\n\nmodule-template exiting...";
         exit();
+    };
+
+    if ( _module_path_exists($dist_dir) ) {
+        say "Destination directory $dist_dir exists";
+        say "exiting...";
+        exit();
     }
 
-    my $template_dir;
+    my $template_dir = _get_template_path($opt{t});
 
-    if (( exists $opt{t} ) and ( defined $opt{t} )) {
-        $template_dir = $opt{t};
-    }
-    else {
-        $template_dir  = join q{/}, File::HomeDir->my_home(), '.module-template/templates';
+    my $config_file = _get_config_path($opt{c}, $template_dir);
 
-        #TODO
-        # initialize template dir here
-    }
-
-    die "Template directory $template_dir does not exist\n"
-        unless -d $template_dir;
-
-    my $config_file;
-
-    if ((exists $opt{c}) and (defined $opt{c} )) {
-        $config_file = $opt{c};
-    }
-    else {
-        $config_file = join q{/}, $template_dir, '/../config';
-    }
-
-    die "Could not locate configuration file $config_file\n"
-        unless -f $config_file;
-
-    my %cfg = Config::General->new(
-            -ConfigFile            => $config_file,
-            -MergeDuplicateBlocks  => 1,
-            -MergeDuplicateOptions => 1,
-            -AutoLaunder           => 1,
-            -SplitPolicy           => 'equalsign',
-            -InterPolateVars       => 1,
-            -UTF8                  => 1,
-    )->getall() or croak "could not read configuration file $config_file\n";
+    my $cfg = _get_config($config_file);
 
     my $output_path = join q{/}, cwd, $dist;
 
     # Setting this lets TT2 handle creating the destination files/directories
-    $cfg{template_toolkit}{OUTPUT_PATH} = $output_path;
+    $cfg->{template_toolkit}{OUTPUT_PATH} = $output_path;
 
-    my $tt2 = Template->new( $cfg{template_toolkit} )
-        or croak Template->error();
+    my $tt2 = Template->new( $cfg->{template_toolkit} );
 
     # don't need this in the $tmpl_vars
-    delete $cfg{template_toolkit};
+    delete $cfg->{template_toolkit};
 
     # Template Vars
-    $tmpl_vars = \%cfg;
+    $tmpl_vars = $cfg;
     $tmpl_vars->{module} = $module;
     $tmpl_vars->{today} = strftime('%Y-%m-%d', localtime());
     $tmpl_vars->{year} = strftime('%Y', localtime());
-
-    unless ( (defined $dist_dir) and (-d $dist_dir) ) {
-        mkpath($dist_dir);
-    }
-    else {
-        print "Destination directory $dist_dir exists\n";
-        print "exiting...\n";
-        exit();
-    }
 
     _process_dirs($tt2, $tmpl_vars, $template_dir, $template_dir);
 
@@ -143,56 +111,40 @@ sub run {
 }
 
 #-------------------------------------------------------------------------------
-# Prompt the user for a module name if they omit from the command line
-#-------------------------------------------------------------------------------
-sub _prompt {
-    print 'module-template - Enter module name> ';
+sub _get_config {
+    my ($config_file) = @_;
 
-    my $line = <>;
+    my %cfg = Config::General->new(
+            -ConfigFile            => $config_file,
+            -MergeDuplicateBlocks  => 1,
+            -MergeDuplicateOptions => 1,
+            -AutoLaunder           => 1,
+            -SplitPolicy           => 'equalsign',
+            -InterPolateVars       => 1,
+            -UTF8                  => 1,
+    )->getall() or croak "Could not read configuration file $config_file";
 
-    chomp $line;
-
-    return $line;
+    return \%cfg;
 }
 
 #-------------------------------------------------------------------------------
-# Validate the module naming convention
-#
-# 1. No top-level namespaces
-# 2. No all lower case names
-# 3. Match XXX::XXX
-#-------------------------------------------------------------------------------
-sub _validate_module_name {
-    my ($module_name) = @_;
+sub _get_config_path {
+    my ($opt, $template_dir) = @_;
 
-    given ( $module_name ) {
-        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
-            croak "'$module_name' is a top-level namespace";
-        }
-        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
-            croak "'$module_name' is an all lower-case namespace";
-        }
-        # module name conforms
-        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
-            return 1;
-        }
-        default {
-            croak "'$module_name' does not meet naming requirements";
-        }
+    my $config_file;
+
+    if ( defined $opt ) {
+        $config_file = $opt;
+    }
+    else {
+        $config_file = join q{/}, $template_dir, '../config';
     }
 
-    return;
-}
-
-#-------------------------------------------------------------------------------
-sub _module_path_exists {
-    my ($module_path) = @_;
-
-    if ( ( defined $module_path ) and ( -d $module_path ) ) {
-        return 1;
+    unless ( -f $config_file ) {
+        croak "Could not locate configuration file $config_file\n";
     }
 
-    return;
+    return $config_file;
 }
 
 #-------------------------------------------------------------------------------
@@ -218,6 +170,43 @@ sub _get_module_fqfn {
     my ($dirs, $file_name) = @_;
 
     return File::Spec->catfile( @{$dirs}, $file_name );
+}
+
+#-------------------------------------------------------------------------------
+sub _get_template_path {
+    my ($opt) = @_;
+
+    my $template_dir;
+
+    if ( defined $opt ) {
+
+        unless ( -d $opt ) {
+            croak "Template directory $opt does not exist";
+        }
+
+        $template_dir = $opt;
+    }
+    else {
+        $template_dir  = join q{/}, File::HomeDir->my_home(), '.module-template/templates';
+
+#        unless ( -d $template_dir ) {
+#            #TODO
+#            # initialize template dir here
+#        }
+    }
+
+    return $template_dir;
+}
+
+#-------------------------------------------------------------------------------
+sub _module_path_exists {
+    my ($module_path) = @_;
+
+    if ( ( defined $module_path ) and ( -d $module_path ) ) {
+        return 1;
+    }
+
+    return;
 }
 
 #-------------------------------------------------------------------------------
@@ -271,6 +260,48 @@ sub _process_template {
     $tt2->process($template, $tmpl_vars, $output) or croak $tt2->error();
 
     return $template;
+}
+
+#-------------------------------------------------------------------------------
+# Prompt the user for a module name if they omit from the command line
+#-------------------------------------------------------------------------------
+sub _prompt {
+    print 'module-template - Enter module name> ';
+
+    my $line = <>;
+
+    chomp $line;
+
+    return $line;
+}
+
+#-------------------------------------------------------------------------------
+# Validate the module naming convention
+#
+# 1. No top-level namespaces
+# 2. No all lower case names
+# 3. Match XXX::XXX
+#-------------------------------------------------------------------------------
+sub _validate_module_name {
+    my ($module_name) = @_;
+
+    given ( $module_name ) {
+        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
+            croak "'$module_name' is a top-level namespace";
+        }
+        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+            croak "'$module_name' is an all lower-case namespace";
+        }
+        # module name conforms
+        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
+            return 1;
+        }
+        default {
+            croak "'$module_name' does not meet naming requirements";
+        }
+    }
+
+#    return;
 }
 
 1;
