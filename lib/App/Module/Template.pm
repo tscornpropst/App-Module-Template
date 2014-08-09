@@ -24,20 +24,17 @@ use Try::Tiny;
 
 our (@EXPORT_OK, %EXPORT_TAGS);
 @EXPORT_OK = qw(
-    validate_module_name
     get_module_dirs
     get_module_fqfn
-    prompt
-    process_template
-    process_files
     process_dirs
-    dirwalk
+    process_file
+    process_template
+    prompt
+    validate_module_name
 );
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
 );
-
-my $tmpl_vars;
 
 #-------------------------------------------------------------------------------
 sub run {
@@ -48,10 +45,11 @@ sub run {
     # -c config file
     getopts('t:c:', \%opt);
 
-    my $module = $ARGV[0] || prompt();
-    my $dist   = $module; $dist =~ s/::/-/gmsx;
-    my $file   = $module; $file =~ s/.*:://msx; $file .= '.pm';
-    my $cwd    = File::Spec->catfile( cwd(), $dist );
+    my $module   = $ARGV[0] || prompt();
+    my $dist     = $module; $dist =~ s/::/-/gmsx;
+    my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
+    my $dist_dir = File::Spec->catfile( cwd(), $dist );
+    my $tmpl_vars;
 
     try {
         validate_module_name($module);
@@ -97,6 +95,11 @@ sub run {
             -UTF8                  => 1,
     )->getall() or croak "could not read configuration file $config_file\n";
 
+    my $output_path = join q{/}, cwd, $dist;
+
+    # Setting this lets TT2 handle creating the destination files/directories
+    $cfg{template_toolkit}{OUTPUT_PATH} = $output_path;
+
     my $tt2 = Template->new( $cfg{template_toolkit} )
         or croak Template->error();
 
@@ -109,32 +112,30 @@ sub run {
     $tmpl_vars->{today} = strftime('%Y-%m-%d', localtime());
     $tmpl_vars->{year} = strftime('%Y', localtime());
 
-    unless ( (defined $cwd) and (-d $cwd) ) {
-        mkpath($cwd);
-
-        if ( -d $cwd ) {
-            chdir $cwd;
-        }
-        else {
-            croak "Could not chdir to $cwd\n";
-        }
+    unless ( (defined $dist_dir) and (-d $dist_dir) ) {
+        mkpath($dist_dir);
     }
     else {
-        print "Destination directory $cwd exists\n";
+        print "Destination directory $dist_dir exists\n";
         print "exiting...\n";
         exit();
     }
 
-    dir_walk($tt2, $template_dir, \&process_files, \&process_dirs);
+    process_dirs($tt2, $tmpl_vars, $template_dir, $template_dir);
 
     my $dirs = get_module_dirs( $module );
+
+    # add the distribution dir to the front so our module ends up in the
+    # right place
+    unshift @{$dirs}, $dist_dir;
+
     my $fqfn = get_module_fqfn( $dirs, $file );
 
     # create the module directory
     mkpath( File::Spec->catdir( @{$dirs} ) );
 
     # rename the template file with the module file name
-    move( File::Spec->catfile( 'lib', 'Module.pm' ), $fqfn );
+    move( File::Spec->catfile( $dist_dir, 'lib', 'Module.pm' ), $fqfn );
 
     return 1;
 }
@@ -182,7 +183,7 @@ sub validate_module_name {
 }
 
 #-------------------------------------------------------------------------------
-# split the module name into directories
+# Split the module name into directories
 #-------------------------------------------------------------------------------
 sub get_module_dirs {
     my ($module) = @_;
@@ -198,7 +199,7 @@ sub get_module_dirs {
 }
 
 #-------------------------------------------------------------------------------
-# create a path to the fully qualified file name
+# Return the path to the fully qualified file name
 #-------------------------------------------------------------------------------
 sub get_module_fqfn {
     my ($dirs, $file_name) = @_;
@@ -207,99 +208,56 @@ sub get_module_fqfn {
 }
 
 #-------------------------------------------------------------------------------
-# callback to pass to dir_walk to handle files
-#-------------------------------------------------------------------------------
-sub process_files {
-    my ($tt2, $src_file) = @_;
-
-    # grab the directory name to be handled by dir_sub()
-    # This also ensures the directory exists before we write the file
-    my ($template, $src_directory, $suffix) =
-        fileparse($src_file, qr/[.]{1,1}swp\z/msx);
-
-    # skip swap files
-    return if $suffix eq '.swp';
-
-    # call process_dirs() to create the destination directory
-    my $dest_dir = process_dirs($src_directory);
-
-    # $dest_dir will be undef if it is the parent template directory so,
-    # we set it to the current working directory
-    my $cwd = cwd;
-    $dest_dir = $cwd unless defined $dest_dir;
-
-    my $dest_file = join q{/}, $dest_dir, $template;
-
-    # process the template and write the output
-    process_template($tt2, $src_file, $tmpl_vars, $dest_file);
-
-    return $dest_file;
-}
-
-#-------------------------------------------------------------------------------
-# callback to pass to dir_walk() to handle directories
-#
-# Create destination directories that do not exist
+# Walk the template directory
 #-------------------------------------------------------------------------------
 sub process_dirs {
-    my ($src_dir) = @_;
+    my ($tt2, $tmpl_vars, $template_dir, $source) = @_;
 
-    my $stub = basename($src_dir);
+    if ( -d $source ) {
+        my $dir;
 
-    # return undef here so we don't re-create the templates top-level dir
-    # file_sub() will fix the path
-    return if $stub eq 'templates';
-    return if $stub eq '.module-template';
-
-    my $cwd = cwd;
-    my $dest_dir = join q{/}, $cwd, $stub;
-
-    unless ( -d $dest_dir ) {
-        mkpath($dest_dir);
-    }
-
-    return $dest_dir;
-}
-
-#-------------------------------------------------------------------------------
-# Recurse directory to process all templates
-#-------------------------------------------------------------------------------
-sub dir_walk {
-    my ($tt2, $top, $filefunc, $dirfunc) = @_;
-
-    my $DIR;
-
-    if (-d $top) {
-        unless (opendir $DIR, $top) {
-            carp "Couldn't open directory $top $!; skipping.\n";
-            return;
+        unless ( opendir $dir, $source ) {
+            croak "Couldn't open directory $source: $!; skipping.\n";
         }
 
-        my @results;
+        while ( my $file = readdir $dir ) {
+            next if $file eq '.' or $file eq '..';
 
-        while (my $file = readdir $DIR) {
-            next if $file eq '.' || $file eq '..';
-            push @results, dir_walk($tt2, "$top/$file", $filefunc, $dirfunc);
+            # File::Spec->catfile() is too helpful here, goin' old school
+            my $target = "$source/$file";
+
+            process_dirs($tt2, $tmpl_vars, $template_dir, $target);
         }
 
-        return $dirfunc->($top, @results);
+        closedir $dir;
     }
     else {
-        return $filefunc->($tt2, $top);
+        my $output = process_file($template_dir, $source);
+
+        process_template($tt2, $tmpl_vars, $source, $output);
     }
 
-    return;
+    return $source;
 }
 
 #-------------------------------------------------------------------------------
-# $tt2->process($template, $tmpl_vars, $output);
+# Return the output path for TT2
+#-------------------------------------------------------------------------------
+sub process_file {
+    my ($template_dir, $source_file) = @_;
+
+    my ($stub) = $source_file =~ m{\A$template_dir/(.*)\z}mosx;
+
+    return $stub;
+}
+
 #-------------------------------------------------------------------------------
 sub process_template {
-    my ($tt2, @args) = @_;
+    my ($tt2, $tmpl_vars, $template, $output) = @_;
 
-    $tt2->process(@args) or croak $tt2->error();
+    $tt2->process($template, $tmpl_vars, $output) or croak $tt2->error();
 
-    return;
+    return $template;
 }
 
 1;
@@ -334,10 +292,6 @@ App::Module::Template is the module loaded by 'module-template'. The subroutines
 
 This function contains the main logic of the program. The script was abstracted here for testability.
 
-=item C<dir_walk>
-
-Recursive function to process all files in the module template directory.
-
 =item C<get_module_dirs>
 
 Return an array reference of directory parts from the module name.
@@ -348,11 +302,11 @@ Return the fully qualified file name for the module.
 
 =item C<process_dirs>
 
-Function passed to dir_walk() to handle directories.
+Recursive function to walk the template directory and send templates to process_template().
 
-=item C<process_files>
+=item C<process_file>
 
-Function passed to dir_walk() to handle files.
+Return the output file path for use by process_template().
 
 =item C<process_template>
 
@@ -376,7 +330,7 @@ None.
 
 =over
 
-=item B<Couldn't open directory $top $!; skipping.>
+=item B<Couldn't open directory $directory_name $!; skipping.>
 
 A directory in the module template is unreadable. Check permissions.
 

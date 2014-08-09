@@ -14,7 +14,6 @@ t/.module-template/templates/Changes
 t/.module-template/templates/lib/Module.pm
 t/.module-template/templates/LICENSE
 t/.module-template/templates/Makefile.PL
-t/.module-template/templates/MANIFEST
 t/.module-template/templates/README
 t/.module-template/templates/t/00-load.t
 t/.module-template/templates/xt/author/critic.t
@@ -25,9 +24,11 @@ t/00-load.t
 t/01-load.t
 t/get_module_dirs.t
 t/get_module_fqfn.t
-t/process_dirs.t
-t/process_files.t
-t/prompt.test
+t/process_dirs_abs.t
+t/process_dirs_rel.t
+t/process_file_abs.t
+t/process_file_rel.t
+t/process_template.t
 t/validate_module_name.t
 xt/author/critic.t
 xt/author/perlcritic.rc
