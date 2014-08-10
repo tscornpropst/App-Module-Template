@@ -1,6 +1,7 @@
 package [% module %];
 
-use 5.016;
+use [% min_perl_version %];
+
 use strict;
 use warnings FATAL => 'all';
 

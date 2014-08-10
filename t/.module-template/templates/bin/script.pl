@@ -3,7 +3,8 @@
 # AUTHOR: [% author %], [% email %]
 # CREATED: [% today %]
 
-use 5.016;
+use [% min_perl_version %];
+
 use strict;
 use warnings;
 

@@ -45,7 +45,7 @@ ok( -f "$abs_output_path/Changes", 'Changes exists' );
 ok( -f "$abs_output_path/LICENSE", 'LICENSE exists' );
 ok( -f "$abs_output_path/Makefile.PL", 'Makefile.PL exists' );
 ok( -f "$abs_output_path/README", 'README exists' );
-ok( -f "$abs_output_path/bin/app.pl", 'app.pl exists' );
+ok( -f "$abs_output_path/bin/script.pl", 'script.pl exists' );
 ok( -f "$abs_output_path/lib/Module.pm", 'Module.pm exists' );
 ok( -f "$abs_output_path/t/00-load.t", '00-load.t exists' );
 ok( -f "$abs_output_path/xt/author/pod-coverage.t", 'pod-coverage.t exists' );

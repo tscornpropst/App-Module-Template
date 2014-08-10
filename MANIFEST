@@ -10,6 +10,7 @@ README
 README.md
 t/.module-template/config
 t/.module-template/templates/bin/app.pl
+t/.module-template/templates/bin/script.pl
 t/.module-template/templates/Changes
 t/.module-template/templates/lib/Module.pm
 t/.module-template/templates/LICENSE
@@ -27,7 +28,12 @@ t/get_config_path.t
 t/get_module_dirs.t
 t/get_module_fqfn.t
 t/get_template_path.t
+t/get_tmpl_body.t
+t/get_tmpl_file.t
+t/get_tmpl_path.t
+t/make_tmpl_path.t
 t/module_path_exists.t
+t/module_template.t
 t/process_dirs_abs.t
 t/process_dirs_rel.t
 t/process_file_abs.t
@@ -37,6 +43,7 @@ t/run-badname.t
 t/run-direxist.t
 t/run.t
 t/validate_module_name.t
+t/write_tmpl_file.t
 xt/author/critic.t
 xt/author/perlcritic.rc
 xt/author/pod-coverage.t

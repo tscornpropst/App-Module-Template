@@ -1,4 +1,4 @@
-[% module %]
+[% module %] is Copyright (C) [% year %], [% author %].
 
 INSTALLATION
 
@@ -16,9 +16,6 @@ perldoc command.
 
         perldoc [% module %]
 
-COPYRIGHT AND LICENSE
+LICENSE INFORMATION
 
-Copyright (C) [% year %], [% author %]
-
-[% license_body %]
-
+This [library|program|code|module] is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. For details, see the full text of the license in the file LICENSE.

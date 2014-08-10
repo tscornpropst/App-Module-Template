@@ -1,32 +1,50 @@
-package main;
-
-require 5.008008;
 use strict;
 use warnings FATAL => 'all';
 
-use ExtUtils::MakeMaker;
+use [% min_perl_version %];
 
-WriteMakefile(
-    NAME                => '[% module %]',
-    AUTHOR              => q{[% author %] [% email %]},
-    VERSION_FROM        => '[% module_path %]',
-    ABSTRACT_FROM       => '[% module_path %]',
-    LICENSE             => '[% license_type %]',
-    BUILD_REQUIRES      => {},
-    MIN_PERL_VERSION    => 5.006,
-    CONFIGURE_REQUIRES  => {
-        'ExtUtils::MakeMaker' => 0,
+use ExtUtils::MakeMaker [% eumm_version %];
+
+my %WriteMakefileArgs = (
+    NAME                  => '[% module %]',
+    AUTHOR                => q{[% author %] [% email %]},
+    VERSION_FROM          => '[% module_path %]',
+    ABSTRACT_FROM         => '[% module_path %]',
+    LICENSE               => '[% license_type %]',
+    DISTNAME              => '[% dist %]',
+    MIN_PERL_VERSION      => [% min_perl_version %],
+    BUILD_REQUIRES        => {
+        'ExtUtils::MakeMaker' => [% eumm_version %],
     },
-    BUILD_REQUIRES      => {
-        'Test::More'    => 0,
+    CONFIGURE_REQUIRES    => {
+        'ExtUtils::MakeMaker' => [% eumm_version %],
     },
-    PREREQ_PM           => {
+    PREREQ_PM             => {
+        'Carp'            => 0,
+        'POSIX'           => 0,
         #'Some::Module' => 1.23,
     },
-    DISTNAME => '[% dist %]',
-    test => {
-        "TESTS" => "t/*.t",
+    TEST_REQUIRES         => {
+        'Test::More'      => 0,
+        'Test::Exception' => 0,
     },
-    dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => '-*' },
+    test                  => { "TESTS" => "t/*.t", },
+    dist                  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean                 => { FILES => '-*' },
 );
+
+my %FallbackPrereqs = (
+    'Carp'                => 0,
+    'POSIX'               => 0,
+);
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+    delete $WriteMakefileArgs{TEST_REQUIRES};
+    delete $WriteMakefileArgs{BUILD_REQUIRES};
+    $WriteMakefileArgs{PREREQ_PM} = \%FallbackPrereqs;
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+    unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakeFile(%WriteMakefileArgs);
