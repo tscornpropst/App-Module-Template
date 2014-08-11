@@ -108,7 +108,7 @@ Please report any issues or feature requests to C<[% support_email %]>. Patches 
 
 [% author %] C<< [% email %] >>
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
 Copyright (c) [% year %], [% author %] C<< [% email %] >>. All rights reserved.
 
