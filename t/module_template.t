@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 24;
 use Test::Exception;
 
 use Cwd;
@@ -16,7 +16,7 @@ ok( my $mt_dir = join( q{/}, File::HomeDir->my_home(), '.module-template' ), 'se
 
 # skip if home path exists
 SKIP: {
-    skip( "$mt_dir exists", 1) if -d $mt_dir;
+    skip( "$mt_dir exists", 2) if -d $mt_dir;
 
     ok( module_template(), 'module_template creates in home' );
     ok( remove_tree($mt_dir), 'remove test directory' );
@@ -25,7 +25,7 @@ SKIP: {
 ok( my $test_dir = join( q{/}, cwd, 'test_dir' ), 'set test dir' );
 
 SKIP: {
-    skip( "test doesn't exists", 1) unless -d $test_dir;
+    skip( "test doesn't exist", 1) unless -d $test_dir;
     ok( remove_tree($test_dir), 'remove test directory' );
 }
 
