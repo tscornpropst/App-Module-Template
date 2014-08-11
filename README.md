@@ -45,7 +45,17 @@ A Sample Config
 author = Default Author
 email = author@example.com
 support_email = support@example.com
+min_perl_version = 5.016
+eumm_version = 6.63
 license_type = Artistic_2_0
+
+<template_toolkit>
+  PRE_CHOMP = 0
+  POST_CHOMP = 0
+  ENCODING = utf8
+  ABSOLUTE = 1
+  RELATIVE = 1
+</template_toolkit>
 ```
 
 

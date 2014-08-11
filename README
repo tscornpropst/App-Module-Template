@@ -1,9 +1,6 @@
-perl5-app-module-template
-=========================
+App::Module::Template is Copyright (C) 2014, Trevor S. Cornpropst
 
-Yet Another Perl Module Starter
-
-App::Module::Template
+INSTALLATION
 
 To install this module, run the following commands:
 
@@ -12,13 +9,13 @@ To install this module, run the following commands:
   make test
   make install
 
-DEPENDENCIES
-------------
+SUPPORT AND DOCUMENTATION
 
-This application requires Perl 5.16 or greater.
+After install, you can find documentation for this module with the
+perldoc command.
 
-This application depends on Template Toolkit.
+        perldoc App::Module::Template
 
-COPYRIGHT AND LICENSE
+LICENSE INFORMATION
 
-Copyright (C) 2014, Trevor S. Cornpropst
+This [library|program|code|module] is free software; you can redistribute it and/or modify it under the terms of the Artistic License 2.0. For details, see the full text of the license in the file LICENSE.
