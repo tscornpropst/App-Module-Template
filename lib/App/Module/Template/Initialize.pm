@@ -730,17 +730,15 @@ sub module_template {
     my $path_to_app_dir = join q{/}, $tmpl_path, '.module-template';
 
     if ( -d $path_to_app_dir ) {
-        croak "$path_to_app_dir exists. Manually remove this directory before proceeding.";
+        croak "Directory $path_to_app_dir exists. Manually remove this directory before proceeding.";
     }
 
     for my $tmpl_name (keys %{$TEMPLATES}) {
-        print "$tmpl_name\n";
-
         _make_tmpl_path($tmpl_path, $tmpl_name);
         _write_tmpl_file($tmpl_path, $tmpl_name);
     }
 
-    return $tmpl_path;
+    return $path_to_app_dir;
 }
 
 #-------------------------------------------------------------------------------
@@ -806,7 +804,7 @@ sub _write_tmpl_file {
 
     print {$fh} _get_tmpl_body($template_name);
 
-    close $fh or croak "Couldn't close '$fqfn': $!";
+    close $fh;
 
     return $fqfn;
 }
