@@ -3,6 +3,7 @@
 Yet Another Perl Module Starter...
 
 [![Build Status](https://travis-ci.org/tscornpropst/App-Module-Template.svg?branch=master)](https://travis-ci.org/tscornpropst/App-Module-Template)
+[![Coverage Status](https://coveralls.io/repos/tscornpropst/App-Module-Template/badge.png)](https://coveralls.io/r/tscornpropst/App-Module-Template)
 
 Do we need another Perl module create? Probably not. But, here you go.
 
