@@ -79,10 +79,8 @@ sub run {
 
     my $cfg = _get_config($config_file);
 
-    my $output_path = join q{/}, cwd, $dist;
-
     # Setting this lets TT2 handle creating the destination files/directories
-    $cfg->{template_toolkit}{OUTPUT_PATH} = $output_path;
+    $cfg->{template_toolkit}{OUTPUT_PATH} = $dist_dir;
 
     my $tt2 = Template->new( $cfg->{template_toolkit} );
 
@@ -105,7 +103,7 @@ sub run {
 
     my $fqfn = _get_module_fqfn( $dirs, $file );
 
-    # create the module directory
+    # create the module directory to receive the named module.pm
     mkpath( File::Spec->catdir( @{$dirs} ) );
 
     # rename the template file with the module file name
