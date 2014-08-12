@@ -5,11 +5,13 @@ Yet Another Perl Module Starter...
 [![Build Status](https://travis-ci.org/tscornpropst/App-Module-Template.svg?branch=master)](https://travis-ci.org/tscornpropst/App-Module-Template)
 [![Coverage Status](https://coveralls.io/repos/tscornpropst/App-Module-Template/badge.png)](https://coveralls.io/r/tscornpropst/App-Module-Template)
 
-Do we need another Perl module create? Probably not. But, here you go.
+Do we need another Perl module creater? Probably not. But, here you go.
 
 __App::Module::Template__ is the guts to **_module-template_**, a command line utility to create a Perl project directory based off a template directory you define. **module-template** will initialize the directory for you the first time you run the program. The rest is up to you.
 
-When you run **module-template**, it looks for your template directory and config file in $HOME/.module-template. You can override these locations with command line options. Any values set in your config file will appear in your templates. Every template will get processed into a new directory matching your module name in the exact location as your template. Files with no template markup are copied over to their relevant location in your project directory.
+The idea is to keep it simple and get out of your way. Any file you create in your template directory will get created in your project directory when you run **module-template**. You cannot run module-template more than once on a directory. If the file is a Template Toolkit template, it will be processed. Any other file is simply copied. If you create a directory in your template directory, it will appear in your project directory.
+
+When you run **module-template**, it looks for your template directory and config file in $HOME/.module-template. You can override these locations with command line options. Any values set in your config file will appear in your templates. You are free to add/remove/rename the variables as you like. This puts your Perl projects completely under your control. Use as much or as little as you like. Define what makes sense for your environment.
 
 ## USAGE
 
