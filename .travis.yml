@@ -5,6 +5,7 @@ perl:
 install:
   - cpanm --quiet --notest IO::Prompt::Tiny
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
+  - cpanm --quiet --notest --installdeps .
 
 after_success:
   - cover -report coveralls
