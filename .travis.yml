@@ -2,5 +2,9 @@ language: perl
 perl:
   - 5.16
 
-before_install:
-  - "cpanm IO::Prompt::Tiny"
+install:
+  - cpanm --quiet --notest IO::Prompt::Tiny
+  - cpanm --quiet --notest Devel::Cover::Report::Coveralls
+
+after_success:
+  - cover -report coveralls
