@@ -9,7 +9,6 @@ MANIFEST			This list of files
 README
 README.md
 t/.module-template/config
-t/.module-template/templates/bin/app.pl
 t/.module-template/templates/bin/script.pl
 t/.module-template/templates/Changes
 t/.module-template/templates/lib/Module.pm

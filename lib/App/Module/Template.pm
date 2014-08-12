@@ -9,6 +9,8 @@ our $VERSION = '0.01';
 
 use base qw(Exporter);
 
+use App::Module::Template::Initialize qw/module_template/;
+
 use Carp;
 use Config::General;
 use Cwd;
@@ -18,6 +20,7 @@ use File::HomeDir;
 use File::Path;
 use File::Spec;
 use Getopt::Std;
+use IO::Prompt::Tiny qw/prompt/;
 use POSIX qw(strftime);
 use Template;
 use Try::Tiny;
@@ -34,7 +37,6 @@ our (@EXPORT_OK, %EXPORT_TAGS);
     _process_dirs
     _process_file
     _process_template
-    _prompt
     _validate_module_name
 );
 %EXPORT_TAGS = (
@@ -50,7 +52,9 @@ sub run {
     # -c config file
     getopts('t:c:', \%opt);
 
-    my $module   = $ARGV[0] || _prompt();
+    my $prompt = 'module-template - Enter module name>';
+
+    my $module   = $ARGV[0] || prompt($prompt);
     my $dist     = $module; $dist =~ s/::/-/gmsx;
     my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
     my $dist_dir = File::Spec->catfile( cwd(), $dist );
@@ -263,19 +267,6 @@ sub _process_template {
 }
 
 #-------------------------------------------------------------------------------
-# Prompt the user for a module name if they omit from the command line
-#-------------------------------------------------------------------------------
-sub _prompt {
-    print 'module-template - Enter module name> ';
-
-    my $line = <>;
-
-    chomp $line;
-
-    return $line;
-}
-
-#-------------------------------------------------------------------------------
 # Validate the module naming convention
 #
 # 1. No top-level namespaces
@@ -286,22 +277,23 @@ sub _validate_module_name {
     my ($module_name) = @_;
 
     given ( $module_name ) {
-        when ( $module_name =~ m/\A[A-Za-z]+\z/msx ) {
+        when ( $module_name =~ m/\A[A-Za-z]+\z/msx )
+        {
             croak "'$module_name' is a top-level namespace";
         }
-        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx ) {
+        when ( $module_name =~ m/\A[a-z]+\:\:[a-z]+/msx )
+        {
             croak "'$module_name' is an all lower-case namespace";
         }
         # module name conforms
-        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx ) {
+        when ( $module_name =~ m/\A[A-Z][A-Za-z]+(?:\:\:[A-Z][A-Za-z]+)+\z/msx )
+        {
             return 1;
         }
         default {
             croak "'$module_name' does not meet naming requirements";
         }
     }
-
-#    return;
 }
 
 1;

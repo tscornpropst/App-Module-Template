@@ -74,6 +74,4 @@ Perl 5.16 or greater.
 
 Template Toolkit
 
-COPYRIGHT AND LICENSE
-
 Copyright (C) 2014, Trevor S. Cornpropst
