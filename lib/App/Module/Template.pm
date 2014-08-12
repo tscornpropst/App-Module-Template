@@ -17,7 +17,7 @@ use Cwd;
 use File::Basename;
 use File::Copy;
 use File::HomeDir;
-use File::Path;
+use File::Path qw/make_path/;
 use File::Spec;
 use Getopt::Std;
 use IO::Prompt::Tiny qw/prompt/;
@@ -104,7 +104,7 @@ sub run {
     my $fqfn = _get_module_fqfn( $dirs, $file );
 
     # create the module directory to receive the named module.pm
-    mkpath( File::Spec->catdir( @{$dirs} ) );
+    make_path( File::Spec->catdir( @{$dirs} ) );
 
     # rename the template file with the module file name
     move( File::Spec->catfile( $dist_dir, 'lib', 'Module.pm' ), $fqfn );
