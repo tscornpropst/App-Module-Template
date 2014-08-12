@@ -2,9 +2,10 @@ language: perl
 perl:
   - 5.16
 
-install:
-  - cpanm --quiet --notest IO::Prompt::Tiny
+before_install:
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
+
+install:
   - cpanm --quiet --notest --installdeps .
 
 script:
