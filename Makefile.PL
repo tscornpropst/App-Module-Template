@@ -36,6 +36,8 @@ my %WriteMakefileArgs = (
     },
     TEST_REQUIRES          => {
         'Cwd'              => 0,
+        'File::HomeDir'    => 0,
+        'File::Path'       => 0,
         'Template'         => 0,
         'Test::More'       => 0,
         'Test::Exception'  => 0,
@@ -46,18 +48,19 @@ my %WriteMakefileArgs = (
 );
 
 my %FallbackPrereqs = (
-    'Carp'            => 0,
-    'Config::General' => 0,
-    'Cwd'             => 0,
-    'File::Basename'  => 0,
-    'File::Copy'      => 0,
-    'File::HomeDir'   => 0,
-    'File::Path'      => 0,
-    'File::Spec'      => 0,
-    'Getopt::Std'     => 0,
-    'POSIX'           => 0,
-    'Template'        => 0,
-    'Try::Tiny'       => 0,
+    'Carp'             => 0,
+    'Config::General'  => 0,
+    'Cwd'              => 0,
+    'File::Basename'   => 0,
+    'File::Copy'       => 0,
+    'File::HomeDir'    => 0,
+    'File::Path'       => 0,
+    'File::Spec'       => 0,
+    'Getopt::Std'      => 0,
+    'IO::Prompt::Tiny' => 0,
+    'POSIX'            => 0,
+    'Template'         => 0,
+    'Try::Tiny'        => 0,
 );
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
