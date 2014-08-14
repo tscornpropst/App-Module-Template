@@ -88,6 +88,30 @@ nytprof.out
 *.swp
 END_OF_BODY
     },
+    travis_yml => {
+        file => '.travis.yml',
+        path => '.module-template/templates',
+        body => <<'END_OF_BODY',
+language: perl
+perl:
+  - "5.20"
+  - "5.18"
+  - "5.16"
+
+before_install:
+  - cpanm --quiet --notest Devel::Cover::Report::Coveralls
+
+install:
+  - cpanm --quiet --notest --installdeps .
+
+script:
+  - PERL5OPT=-MDevel::Cover=-coverage,statement,branch,condition,path,subroutine prove -l t
+  - cover
+
+after_success:
+  - cover -report coveralls
+END_OF_BODY
+    },
     makefile_pl => {
         file => 'Makefile.PL',
         path => '.module-template/templates',

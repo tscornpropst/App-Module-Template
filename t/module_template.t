@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 25;
 use Test::Exception;
 
 use Cwd;
@@ -39,6 +39,7 @@ ok( my $tmpl_dir = join( q{/}, $mt_test_dir, 'templates' ), 'set template dir' )
 
 ok( -f "$mt_test_dir/config", 'config exists' );
 ok( -f "$tmpl_dir/.gitignore", '.gitignore exists' );
+ok( -f "$tmpl_dir/.travis.yml", '.travis.yml exists' );
 ok( -f "$tmpl_dir/Changes", 'Changes exists' );
 ok( -f "$tmpl_dir/LICENSE", 'LICENSE exists' );
 ok( -f "$tmpl_dir/Makefile.PL", 'Makefile.PL exists' );
