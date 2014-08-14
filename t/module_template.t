@@ -53,6 +53,6 @@ ok( -f "$tmpl_dir/xt/author/pod-coverage.t", 'pod-coverage.t exists' );
 ok( -f "$tmpl_dir/xt/release/pod-syntax.t", 'pod-syntax.t exists' );
 
 SKIP: {
-    skip( "test doesn't exists", 1) unless -d $test_dir;
+    skip( "test doesn't exist", 1) unless -d $test_dir;
     ok( remove_tree($test_dir), 'remove test directory' );
 }
