@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 10;
+use Test::More tests => 13;
 use Test::Exception;
 
 use Cwd;
@@ -28,4 +28,14 @@ is( -d $path, undef, 'path removed' );
 
 ok( my $home_path = join( q{/}, File::HomeDir->my_home(), '.module-template/templates' ), 'set home path' );
 
-is( _get_template_path(), $home_path, 'returns path');
+ok( my $home_tmpl_path = join( q{/}, $home_path, 'templates' ), 'set home template path' );
+
+SKIP: {
+    skip( 'home path does not exist', 3) unless -d $home_path;
+
+    is( _get_template_path(), $home_tmpl_path, 'returns path');
+
+    ok( remove_tree($home_path), 'removing .module-template dir');
+
+    is( -d $home_path, undef, '.module-template dir removed' );
+}

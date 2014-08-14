@@ -41,6 +41,7 @@ t/process_file_rel.t
 t/process_template.t
 t/run-badname.t
 t/run-direxist.t
+t/run-inithome.t
 t/run.t
 t/validate_module_name.t
 t/write_tmpl_file.t

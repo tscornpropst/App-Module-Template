@@ -9,7 +9,7 @@ our $VERSION = '0.01';
 
 use base qw(Exporter);
 
-use App::Module::Template::Initialize qw/module_template/;
+use App::Module::Template::Initialize;
 
 use Carp;
 use Config::General;
@@ -191,10 +191,10 @@ sub _get_template_path {
     else {
         $template_dir  = join q{/}, File::HomeDir->my_home(), '.module-template/templates';
 
-#        unless ( -d $template_dir ) {
-#            #TODO
-#            # initialize template dir here
-#        }
+        unless ( -d $template_dir ) {
+            # initialize .module-template in user's home directory
+            App::Module::Template::Initialize::module_template();
+        }
     }
 
     return $template_dir;
