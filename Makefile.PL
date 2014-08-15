@@ -35,9 +35,11 @@ my %WriteMakefileArgs = (
         'Try::Tiny'        => 0,
     },
     TEST_REQUIRES          => {
+        'Capture::Tiny'    => 0,
         'Cwd'              => 0,
         'File::HomeDir'    => 0,
         'File::Path'       => 0,
+        'File::Temp'       => 0,
         'Template'         => 0,
         'Test::More'       => 0,
         'Test::Exception'  => 0,
