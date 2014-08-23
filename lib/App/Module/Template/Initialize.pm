@@ -871,11 +871,7 @@ This subroutine iterates the templates and creates files and directories in $HOM
 
 =head1 DIAGNOSTICS
 
-=over
-
-=item B<Error Message>
-
-=back
+None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

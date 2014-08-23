@@ -23,15 +23,15 @@ This documentation refers to module-template version 0.01.
 
 =head1 USAGE
 
-    module-template Module::Name
+    module-template Module::Name <MODULE::NAME>
 
-    module-template Module::Name -c /path/to/config
+    module-template Module::Name -c /path/to/config <MODULE::NAME>
 
-    module-template Module::Name -t /path/to/templates
+    module-template Module::Name -t /path/to/templates <MODULE::NAME>
 
 =head1 REQUIRED ARGUMENTS
 
-The only required argument is a valid module name.
+The only required argument is a valid module name. If you don't enter one on the command line, you will be prompted.
 
 =head1 OPTIONS
 
@@ -41,17 +41,47 @@ The only required argument is a valid module name.
 
 =head1 DESCRIPTION
 
+B<module-template> creates a Perl project directory based off a template you define in $HOME/.module-template/templates. The 'templates' directory can contain Template Toolkit files, plain files, and directories. The directory structure will be recreated in your project directory. Template Toolkit files are processed as you would expect and plain files are copied to their respective location in your project directory.
+
+You define any variables you want in F<$HOME/.module-template/config>. Those variables will be available in your TT templates. Three template variables are defined inside B<module-template>; C<module>, C<today>, and C<year>. Some variables are set up for you in the config file. Feel free to change or remove these as you see fit.
+
+The default license is Artistic 2.0. You can override that by creating your own LICENSE file and updating the C<license_type> and C<license_body> variables in your config file.
+
+The first time you run B<module-template>, a .module-template directory will be created for you in your $HOME directory.
+
 =head1 REQUIREMENTS
 
-None.
+Easy to use and quick to get running. This is all the documentation you need unless you don't know Template Toolkit.
 
 =head1 DIAGNOSTICS
 
-None.
+=over
+
+=item B<%s is a %s, module-template exiting...>
+    You have likely entered an invalid Perl module name. module-template will detect well formed names and reject top level and all lower-case namespaces. More checks may be added later.
+
+=item B<Destination directory %s exists>
+    You tried to create a module project directory that already exists in your current directory.
+
+=item B<Could not locate configuration file %s>
+    There was not a config file at the location you specified.
+
+=item B<Could not read configuration file %s>
+    Your $HOME/.module-template/config or command line specified config file is unreadable.
+
+=item B<Directory %s exists. Manually remove this directory before proceeding.>
+
+module-template will not overwrite an existing .module-template directory in your home.
+
+=back
 
 =head1 CONFIGURATION
 
 Edit $HOME/.module-template/config.
+
+Define any variables you like and add them to your templates.
+
+There is a template_toolkit section where you can add any TT2 configuration you like.
 
 =head1 EXIT STATUS
 

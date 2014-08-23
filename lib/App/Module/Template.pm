@@ -330,7 +330,7 @@ This function is called by module-template to execute logic of the program.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-App::Module::Template is configured by ~/.module-template/config.
+App::Module::Template is configured by ~/.module-template/config. See module-template for more information.
 
 =head1 DEPENDENCIES
 
@@ -354,9 +354,9 @@ App::Module::Template is configured by ~/.module-template/config.
 
 =item * Getopt::Std
 
-=item * POSIX
+=item * IO::Prompt::Tiny
 
-=item * Readonly
+=item * POSIX
 
 =item * Template
 
