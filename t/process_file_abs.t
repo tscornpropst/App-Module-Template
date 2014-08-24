@@ -4,20 +4,21 @@ use strict;
 use warnings FATAL => 'all';
 
 use Test::More tests => 8;
-use Cwd;
+use File::Spec;
 
 use_ok( 'App::Module::Template', '_process_file' );
 
-ok( my $abs_tmpl_path = join( q{/}, cwd, 't/.module-template/templates' ), 'set template path' );
+ok( my $abs_tmpl_path = File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path'
+);
 
-ok( my $tmpl_file = 't/00-load.t', 'set template file' );
+ok( my $tmpl_file = File::Spec->catfile('t', '00-load.t' ), 'set template file' );
 
-ok( my $abs_source_file = join( q{/}, $abs_tmpl_path, $tmpl_file ), 'set source file path' );
+ok( my $abs_source_file = File::Spec->catfile( $abs_tmpl_path, $tmpl_file ), 'set source file path' );
 
 is( _process_file($abs_tmpl_path, $abs_source_file), $tmpl_file, '_process_file returns stub' );
 
-ok( my $tmpl_file2 = 'xt/author/critic.t', 'set template file' );
+ok( my $tmpl_file2 = File::Spec->catfile('xt', 'author', 'critic.t' ), 'set template file' );
 
-ok( my $abs_source_file2 = join( q{/}, $abs_tmpl_path, $tmpl_file2 ), 'set source file path' );
+ok( my $abs_source_file2 = File::Spec->catfile( $abs_tmpl_path, $tmpl_file2 ), 'set source file path' );
 
 is( _process_file($abs_tmpl_path, $abs_source_file2), $tmpl_file2, '_process_file returns stub' );

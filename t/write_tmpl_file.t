@@ -6,16 +6,16 @@ use warnings FATAL => 'all';
 use Test::More tests => 16;
 use Test::Exception;
 
-use Cwd;
 use File::Path qw/remove_tree/;
+use File::Spec;
 
 use_ok( 'App::Module::Template::Initialize', '_write_tmpl_file', '_make_tmpl_path' );
 
 ok( my $tmpl_name = 'changes', 'set template name' );
 
-ok( my $test_path = join( q{/}, cwd, 'test_path' ), 'set test path' );
+ok( my $test_path = File::Spec->catdir( File::Spec->curdir, 'test_path' ), 'set test path' );
 
-ok( my $tmpl_path = '.module-template/templates', 'set dir stub' );
+ok( my $tmpl_path = File::Spec->catdir('.module-template', 'templates' ), 'set dir stub' );
 
 SKIP: {
     skip( '$test_path exists', 1 ) unless -d $test_path;
@@ -30,7 +30,7 @@ is( _write_tmpl_file(undef, $tmpl_name), undef, 'returns w/o base path' );
 
 is( _write_tmpl_file($test_path, 'nothing'), undef, 'returns w/ invalid key' );
 
-ok( my $fqfn = join( q{/}, $test_path, $tmpl_path, 'Changes' ), 'set file name' );
+ok( my $fqfn = File::Spec->catfile( $test_path, $tmpl_path, 'Changes' ), 'set file name' );
 
 throws_ok{ _write_tmpl_file($test_path, $tmpl_name) } qr/\ACouldn't open /, 'write template file fails on bad path';
 

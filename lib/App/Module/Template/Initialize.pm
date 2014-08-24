@@ -3,13 +3,14 @@ package App::Module::Template::Initialize;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base qw(Exporter);
 
 use Carp;
 use File::Path qw/make_path/;
 use File::HomeDir;
+use File::Spec;
 
 our (@EXPORT_OK, %EXPORT_TAGS);
 
@@ -74,6 +75,8 @@ None.
 =item * File::Path
 
 =item * File::HomeDir
+
+=item * File::Spec
 
 =back
 
@@ -839,7 +842,7 @@ sub module_template {
         : File::HomeDir->my_home();
 
     # Don't clobber an existing configuration
-    my $path_to_app_dir = join q{/}, $tmpl_path, '.module-template';
+    my $path_to_app_dir = File::Spec->catdir( $tmpl_path, '.module-template' );
 
     if ( -d $path_to_app_dir ) {
         croak "Directory $path_to_app_dir exists. Manually remove this directory before proceeding.";
@@ -890,7 +893,7 @@ sub _make_tmpl_path {
 
     my $template_path = _get_tmpl_path($template_name);
 
-    my $fq_path = join q{/}, $base_path, $template_path;
+    my $fq_path = File::Spec->catdir( $base_path, $template_path );
 
     # make_path silently fails on existing directories
     make_path($fq_path);
@@ -910,7 +913,7 @@ sub _write_tmpl_file {
 
     my $template_file = _get_tmpl_file($template_name);
 
-    my $fqfn = join q{/}, $base_path, $template_path, $template_file;
+    my $fqfn = File::Spec->catfile( $base_path, $template_path, $template_file );
 
     open ( my $fh, '>', $fqfn ) or croak "Couldn't open '$fqfn': $!";
 

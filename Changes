@@ -5,3 +5,6 @@ Revision history for App::Module::Template
 
 0.02  2014-08-24 13:33
       Reorganized Initialize.pm
+
+0.03  2014-08-24 14:25
+      Replaced all path handling with File::Spec for portability

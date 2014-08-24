@@ -6,23 +6,23 @@ use warnings FATAL => 'all';
 use Test::More tests => 6;
 use Test::Exception;
 
-use Cwd;
 use File::Path qw/remove_tree make_path/;
+use File::Spec;
 
 my $exited;
 BEGIN { *CORE::GLOBAL::exit = sub { $exited++ } };
 
 @ARGV = (
     '-t',
-    './t/.module-template/templates',
+    File::Spec->abs2rel( File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ) ),
     '-c',
-    './t/.module-template/config',
+    File::Spec->abs2rel( File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'config' ) ),
     'Some::Test',
 );
 
 use_ok( 'App::Module::Template', 'run' );
 
-ok( my $module_dir = join( q{/}, cwd, 'Some-Test' ), 'set module directory' );
+ok( my $module_dir = File::Spec->catdir( File::Spec->curdir, 'Some-Test' ), 'set module directory' );
 
 # make sure we have a clean environment
 if ( -d $module_dir ) { remove_tree($module_dir); };

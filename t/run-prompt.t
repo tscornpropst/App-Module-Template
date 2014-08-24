@@ -6,15 +6,15 @@ use warnings FATAL => 'all';
 use Test::More tests => 6;
 
 use Capture::Tiny qw/capture/;
-use Cwd;
 use File::Path qw/remove_tree/;
+use File::Spec;
 use File::Temp qw/tempfile/;
 
 @ARGV = (
     '-t',
-    './t/.module-template/templates',
+    File::Spec->abs2rel( File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ) ),
     '-c',
-    './t/.module-template/config',
+    File::Spec->abs2rel( File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'config' ) ),
 );
 
 use_ok( 'App::Module::Template', 'run' );
@@ -34,7 +34,7 @@ sub _prompt {
     my $result = capture { scalar run(@args) };
 }
 
-ok( my $module_path = join( q{/}, cwd, 'Some-Test' ), 'set module path' );
+ok( my $module_path = File::Spec->catdir( File::Spec->curdir, 'Some-Test' ), 'set module path' );
 
 SKIP: {
     skip( 'module path does not exist', 1 ) unless -d $module_path;

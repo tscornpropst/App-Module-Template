@@ -6,9 +6,9 @@ use warnings FATAL => 'all';
 use Test::More tests => 27;
 use Test::Exception;
 
-use Cwd;
 use File::HomeDir;
 use File::Path qw/remove_tree/;
+use File::Spec;
 
 @ARGV = (
     'Some::Test',
@@ -16,9 +16,9 @@ use File::Path qw/remove_tree/;
 
 use_ok( 'App::Module::Template', 'run' );
 
-ok( my $module_dir = join( q{/}, cwd, 'Some-Test' ), 'set module directory' );
+ok( my $module_dir = File::Spec->catdir( File::Spec->curdir, 'Some-Test' ), 'set module directory' );
 
-ok( my $mt_dir = join( q{/}, File::HomeDir->my_home(), '.module-template' ), 'set module-template dir' );
+ok( my $mt_dir = File::Spec->catdir( File::HomeDir->my_home(), '.module-template' ), 'set module-template dir' );
 
 # make sure we have a clean environment
 SKIP: {
@@ -35,22 +35,22 @@ SKIP: {
 
     ok( -d $mt_dir, '.module-template created in home' );
 
-    ok( my $tmpl_dir = join( q{/}, $mt_dir, 'templates' ), 'set template dir' );
+    ok( my $tmpl_dir = File::Spec->catdir( $mt_dir, 'templates' ), 'set template dir' );
 
-    ok( -f "$mt_dir/config", 'config exists' );
-    ok( -f "$tmpl_dir/.gitignore", '.gitignore exists' );
-    ok( -f "$tmpl_dir/.travis.yml", '.travis.yml exists' );
-    ok( -f "$tmpl_dir/Changes", 'Changes exists' );
-    ok( -f "$tmpl_dir/LICENSE", 'LICENSE exists' );
-    ok( -f "$tmpl_dir/Makefile.PL", 'Makefile.PL exists' );
-    ok( -f "$tmpl_dir/README", 'README exists' );
-    ok( -f "$tmpl_dir/bin/script.pl", 'script.pl exists' );
-    ok( -f "$tmpl_dir/lib/Module.pm", 'Module.pm exists' );
-    ok( -f "$tmpl_dir/t/00-load.t", '00-load.t exists' );
-    ok( -f "$tmpl_dir/xt/author/critic.t", 'critic.t exists' );
-    ok( -f "$tmpl_dir/xt/author/perlcritic.rc", 'perlcritic.rc exists' );
-    ok( -f "$tmpl_dir/xt/author/pod-coverage.t", 'pod-coverage.t exists' );
-    ok( -f "$tmpl_dir/xt/release/pod-syntax.t", 'pod-syntax.t exists' );
+    ok( -f File::Spec->catfile( $mt_dir, 'config' ), 'config exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, '.gitignore' ), '.gitignore exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, '.travis.yml' ), '.travis.yml exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'Changes' ), 'Changes exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'LICENSE' ), 'LICENSE exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'Makefile.PL' ), 'Makefile.PL exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'README' ), 'README exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'bin', 'script.pl' ), 'script.pl exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'lib', 'Module.pm' ), 'Module.pm exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 't', '00-load.t' ), '00-load.t exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'critic.t' ), 'critic.t exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'perlcritic.rc' ), 'perlcritic.rc exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'pod-coverage.t' ), 'pod-coverage.t exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'release', 'pod-syntax.t' ), 'pod-syntax.t exists' );
 
     # run again when directory exists
     ok( remove_tree($module_dir), 'removing module directory' );

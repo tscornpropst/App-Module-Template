@@ -5,16 +5,16 @@ use warnings FATAL => 'all';
 
 use Test::More tests => 23;
 
-use Cwd;
 use File::Path qw/remove_tree/;
+use File::Spec;
 
 use_ok( 'App::Module::Template::Initialize', '_make_tmpl_path' );
 
 ok( my $tmpl_name = 'changes', 'set template name' );
 
-ok( my $test_path = join( q{/}, cwd, 'test_path' ), 'set test path' );
+ok( my $test_path = File::Spec->catdir( File::Spec->curdir, 'test_path' ), 'set test path' );
 
-ok( my $result_path = join( q{/}, $test_path, '.module-template/templates' ), 'set result path' );
+ok( my $result_path = File::Spec->catdir( $test_path, '.module-template', 'templates' ), 'set result path' );
 
 SKIP: {
     skip( '$test_path exists', 1 ) unless -d $test_path;
@@ -38,7 +38,7 @@ is( -d $result_path, undef, 'result path removed' );
 
 ok( my $tmpl_name2 = 'critic_test', 'set template name' );
 
-ok( my $result_path2 = join( q{/}, $test_path, '.module-template/templates/xt/author' ), 'set result path' );
+ok( my $result_path2 = File::Spec->catdir( $test_path, '.module-template', 'templates', 'xt', 'author' ), 'set result path' );
 
 is( _make_tmpl_path($test_path, $tmpl_name2), $result_path2, 'create template path returns path' );
 

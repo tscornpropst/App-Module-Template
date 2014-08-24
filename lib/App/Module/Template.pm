@@ -5,7 +5,7 @@ use 5.016;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base qw(Exporter);
 
@@ -13,7 +13,6 @@ use App::Module::Template::Initialize;
 
 use Carp;
 use Config::General;
-use Cwd;
 use File::Basename;
 use File::Copy;
 use File::HomeDir;
@@ -57,7 +56,7 @@ sub run {
     my $module   = $ARGV[0] || prompt($prompt);
     my $dist     = $module; $dist =~ s/::/-/gmsx;
     my $file     = $module; $file =~ s/.*:://msx; $file .= '.pm';
-    my $dist_dir = File::Spec->catfile( cwd(), $dist );
+    my $dist_dir = File::Spec->catfile( File::Spec->curdir, $dist );
     my $tmpl_vars;
 
     try {
@@ -139,7 +138,7 @@ sub _get_config_path {
         $config_file = $opt;
     }
     else {
-        $config_file = join q{/}, $template_dir, '../config';
+        $config_file = File::Spec->catfile( $template_dir, '../config' );
     }
 
     unless ( -f $config_file ) {
@@ -189,7 +188,7 @@ sub _get_template_path {
         $template_dir = $opt;
     }
     else {
-        $template_dir  = join q{/}, File::HomeDir->my_home(), '.module-template/templates';
+        $template_dir  = File::Spec->catdir( File::HomeDir->my_home(), '.module-template/templates' );
 
         unless ( -d $template_dir ) {
             # initialize .module-template in user's home directory
@@ -339,8 +338,6 @@ App::Module::Template is configured by ~/.module-template/config. See module-tem
 =item * Carp
 
 =item * Config::General
-
-=item * Cwd
 
 =item * File::Basename
 
