@@ -1,4 +1,3 @@
-.travis.yml
 bin/module-template
 Changes
 lib/App/Module/Template.pm
@@ -7,7 +6,6 @@ LICENSE
 Makefile.PL
 MANIFEST			This list of files
 README
-README.md
 t/.module-template/config
 t/.module-template/templates/.travis.yml
 t/.module-template/templates/bin/script.pl
