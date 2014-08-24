@@ -3,7 +3,7 @@ package App::Module::Template::Initialize;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base qw(Exporter);
 
@@ -24,6 +24,94 @@ our (@EXPORT_OK, %EXPORT_TAGS);
 %EXPORT_TAGS = (
     ALL => [ @EXPORT_OK ],
 );
+
+=pod
+
+=head1 NAME
+
+App::Module::Template::Initialize - Templates to pre-populate template directory
+
+=head1 VERSION
+
+This documentation refers to App::Module::Template::Initialize version 0.01.
+
+=head1 SYNOPSIS
+
+    use App::Module::Template::Initialize qw/module_template/;
+
+    module_template($path);
+
+=head1 DESCRIPTION
+
+App::Module::Template::Initialize contains the templates and method to initialize the .module-templates/templates directory for use by module-template.
+
+See module-template for configuration and usage.
+
+=head1 SUBROUTINES/METHODS
+
+=over
+
+=item C<module_template>
+
+This subroutine iterates the templates and creates files and directories in $HOME/.module-template.
+
+=back
+
+=head1 DIAGNOSTICS
+
+None.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+None.
+
+=head1 DEPENDENCIES
+
+=over
+
+=item * Carp
+
+=item * File::Path
+
+=item * File::HomeDir
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any issues or feature requests to Trevor S. Cornpropst C<tscornpropst@gmail.com>. Patches are welcome.
+
+=head1 AUTHOR
+
+Trevor S. Cornpropst
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2014 Trevor S. Cornpropst C<< tscornpropst@gmail.com >>. All rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
+AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
+YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
+CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
+CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=cut
+
 
 our $TEMPLATES = {
     config => {
@@ -836,91 +924,3 @@ sub _write_tmpl_file {
 1;
 
 __END__
-
-=pod
-
-=head1 NAME
-
-App::Module::Template::Initialize - Templates to pre-populate template directory
-
-=head1 VERSION
-
-This documentation refers to App::Module::Template::Initialize version 0.01.
-
-=head1 SYNOPSIS
-
-    use App::Module::Template::Initialize qw/module_template/;
-
-    module_template($path);
-
-=head1 DESCRIPTION
-
-App::Module::Template::Initialize contains the templates and method to initialize the .module-templates/templates directory for use by module-template.
-
-See module-template for configuration and usage.
-
-=head1 SUBROUTINES/METHODS
-
-=over
-
-=item C<module_template>
-
-This subroutine iterates the templates and creates files and directories in $HOME/.module-template.
-
-=back
-
-=head1 DIAGNOSTICS
-
-None.
-
-=head1 CONFIGURATION AND ENVIRONMENT
-
-None.
-
-=head1 DEPENDENCIES
-
-=over
-
-=item * Carp
-
-=item * File::Path
-
-=item * File::HomeDir
-
-=back
-
-=head1 INCOMPATIBILITIES
-
-None reported.
-
-=head1 BUGS AND LIMITATIONS
-
-No bugs have been reported.
-
-Please report any issues or feature requests to Trevor S. Cornpropst C<tscornpropst@gmail.com>. Patches are welcome.
-
-=head1 AUTHOR
-
-Trevor S. Cornpropst
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (c) 2014 Trevor S. Cornpropst C<< tscornpropst@gmail.com >>. All rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
-
-L<http://www.perlfoundation.org/artistic_license_2_0>
-
-Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
-AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
-YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
-CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-=cut
-
