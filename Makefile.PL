@@ -46,6 +46,17 @@ my %WriteMakefileArgs = (
     EXE_FILES              => ['bin/module-template'],
     dist                   => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     test                   => { TESTS => "t/*.t" },
+    (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
+        'meta-spec' => { version => 2 },
+            resources => {
+                repository => {
+                    type => 'git',
+                    url  => 'https://github.com/tscornpropst/App-Module-Template.git',
+                    web  => 'https://github.com/tscornpropst/App-Module-Template',
+                },
+            }})
+        : ()
+    ),
 );
 
 my %FallbackPrereqs = (
