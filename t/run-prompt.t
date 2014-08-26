@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 6;
+use Test::More;# tests => 6;
 
 use Capture::Tiny qw/capture/;
 use File::Path qw/remove_tree/;
@@ -50,3 +50,5 @@ SKIP: {
 
 ok( -d $module_path, 'module path exists' );
 ok( remove_tree($module_path), 'remove module path' );
+
+done_testing();

@@ -8,3 +8,6 @@ Revision history for App::Module::Template
 
 0.03  2014-08-24 14:25
       Replaced all path handling with File::Spec for portability
+
+0.04  2014-08-26 09:39
+      Update run-prompt.t
