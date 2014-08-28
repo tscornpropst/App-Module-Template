@@ -1,9 +1,9 @@
 #!perl
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
-use Test::More;# tests => 6;
+use Test::More tests => 5;
 
 use Capture::Tiny qw/capture/;
 use File::Path qw/remove_tree/;
@@ -38,6 +38,7 @@ ok( my $module_path = File::Spec->catdir( File::Spec->curdir, 'Some-Test' ), 'se
 
 SKIP: {
     skip( 'module path does not exist', 1 ) unless -d $module_path;
+    diag( 'removing test module path 1' );
     ok( remove_tree($module_path), 'remove module path' );
 }
 
@@ -45,10 +46,12 @@ SKIP: {
     no warnings 'redefine';
     local *IO::Prompt::Tiny::_is_interactive = sub { 1 }; # fake it for testing
     local *STDIN = _set_tempfile('Some::Test');
+    diag( 'run w/o module name should prompt' );
     ok( _prompt(@ARGV), 'run w/o module name prompts' );
 };
 
-ok( -d $module_path, 'module path exists' );
-ok( remove_tree($module_path), 'remove module path' );
-
-done_testing();
+SKIP: {
+    skip( 'module path does not exist', 1 ) unless -d $module_path;
+    diag( 'removing test module path 2' );
+    ok( remove_tree($module_path), 'remove module path' );
+}

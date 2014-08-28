@@ -1,7 +1,7 @@
 #!perl
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Test::More tests => 27;
 use Test::Exception;
@@ -29,7 +29,7 @@ SKIP: {
 
 # don't clobber an existing .module-template directory
 SKIP: {
-    skip( "$mt_dir exists", 18) if -d $mt_dir;
+    skip( "$mt_dir exists", 21) if -d $mt_dir;
 
     ok( run(@ARGV), 'run() w/ module name and no template dir' );
 
