@@ -3,7 +3,7 @@ package App::Module::Template::Initialize;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base qw(Exporter);
 
@@ -208,7 +208,7 @@ END_OF_BODY
         path => '.module-template/templates',
         body => <<'END_OF_BODY',
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use [% min_perl_version %];
 
@@ -725,10 +725,10 @@ END_OF_BODY
         file => '00-load.t',
         path => '.module-template/templates/t',
         body => <<'END_OF_BODY',
-#!perl -T
+#!perl
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Test::More tests => 1;
 
@@ -791,10 +791,10 @@ END_OF_BODY
         file => 'pod-coverage.t',
         path => '.module-template/templates/xt/author',
         body => <<'END_OF_BODY',
-#!perl -T
+#!perl
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Test::More;
 
@@ -819,6 +819,9 @@ END_OF_BODY
         path => '.module-template/templates/xt/release',
         body => <<'END_OF_BODY',
 #!perl
+
+use strict;
+use warnings;
 
 use Test::More;
 
