@@ -11,3 +11,6 @@ Revision history for App::Module::Template
 
 0.04  2014-08-26 09:39
       Update run-prompt.t
+
+0.05  2014-08-28 05:28
+      Remove FATAL from test warnings. Update templates to reflect same.
