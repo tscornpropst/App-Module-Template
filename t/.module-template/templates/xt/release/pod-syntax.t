@@ -1,5 +1,8 @@
 #!perl
 
+use strict;
+use warnings;
+
 use Test::More;
 
 my $min_tp = 1.41;

@@ -1,7 +1,7 @@
 #!perl -T
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Test::More;
 
