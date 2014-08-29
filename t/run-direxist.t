@@ -3,14 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 7;
 use Test::Exception;
 
 use File::Path qw/remove_tree make_path/;
 use File::Spec;
-
-my $exited;
-BEGIN { *CORE::GLOBAL::exit = sub { $exited++ } };
 
 ok( @ARGV = (
     '-t',
@@ -33,9 +30,7 @@ SKIP: {
 
 ok( make_path($module_dir), 'create module path' );
 
-ok( run(@ARGV), 'run' );
-
-is( $exited, 1, 'exits on module path exists' );
+throws_ok{ run(@ARGV) } qr/Destination directory $module_dir/, 'run croaks on existing module directory';
 
 SKIP: {
     skip( 'module directory does not exist', 1 ) unless -d $module_dir;

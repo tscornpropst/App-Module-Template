@@ -3,14 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 5;
 use Test::Exception;
 
 use File::Path qw/remove_tree/;
 use File::Spec;
-
-my $exited;
-BEGIN { *CORE::GLOBAL::exit = sub { $exited++ } };
 
 ok( @ARGV = (
     '-t',
@@ -31,12 +28,4 @@ SKIP: {
     ok( remove_tree($module_dir), 'remove module directory' );
 }
 
-ok( run(@ARGV), 'run' );
-
-is( $exited, 1, 'exits on bad module name' );
-
-SKIP: {
-    skip( 'module directory does not exist', 1 ) unless -d $module_dir;
-    ok( remove_tree($module_dir), 'remove module directory' );
-}
-
+throws_ok{ run(@ARGV) } qr/'some::test' is an all lower-case namespace/, 'run croaks on bad module name';
