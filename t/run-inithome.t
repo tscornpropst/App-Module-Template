@@ -3,16 +3,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 27;
+use Test::More tests => 29;
 use Test::Exception;
 
 use File::HomeDir;
 use File::Path qw/remove_tree/;
 use File::Spec;
 
-@ARGV = (
-    'Some::Test',
-);
+ok( @ARGV = ( '-m', 'Some::Test' ), 'set @ARGV' );
 
 use_ok( 'App::Module::Template', 'run' );
 
@@ -54,7 +52,11 @@ SKIP: {
 
     # run again when directory exists
     ok( remove_tree($module_dir), 'removing module directory' );
+
     is( -d $module_dir, undef, 'module directory removed' );
+
+    ok (@ARGV = ( '-m', 'Some::Test',), 'reset @ARGV' ); 
+
     ok( run(@ARGV), 'run() w/ module name and no template dir' );
 
     ok( remove_tree($mt_dir), 'remove test directory' );

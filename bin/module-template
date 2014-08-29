@@ -5,7 +5,7 @@ use warnings;
 
 use App::Module::Template;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 App::Module::Template->run(@ARGV);
 
@@ -23,15 +23,17 @@ This documentation refers to module-template version 0.01.
 
 =head1 USAGE
 
-    module-template Module::Name <MODULE::NAME>
+    module-template Module::Name -m <Module::Name>
 
-    module-template Module::Name -c /path/to/config <MODULE::NAME>
+    module-template Module::Name -c /path/to/config -m <Module::Name>
 
-    module-template Module::Name -t /path/to/templates <MODULE::NAME>
+    module-template Module::Name -t /path/to/templates -m <Module::Name>
 
 =head1 REQUIRED ARGUMENTS
 
 The only required argument is a valid module name. If you don't enter one on the command line, you will be prompted.
+
+    -m module name
 
 =head1 OPTIONS
 
@@ -57,19 +59,27 @@ Easy to use and quick to get running. This is all the documentation you need unl
 
 =over
 
-=item B<%s is a %s, module-template exiting...>
-    You have likely entered an invalid Perl module name. module-template will detect well formed names and reject top level and all lower-case namespaces. More checks may be added later.
+=item C<-m %s is required>
 
-=item B<Destination directory %s exists>
-    You tried to create a module project directory that already exists in your current directory.
+Module name is a required argument.
 
-=item B<Could not locate configuration file %s>
-    There was not a config file at the location you specified.
+=item C<%s is a %s, module-template exiting...>
 
-=item B<Could not read configuration file %s>
-    Your $HOME/.module-template/config or command line specified config file is unreadable.
+You have likely entered an invalid Perl module name. module-template will detect well formed names and reject top level and all lower-case namespaces. More checks may be added later.
 
-=item B<Directory %s exists. Manually remove this directory before proceeding.>
+=item C<Destination directory %s exists>
+
+You tried to create a module project directory that already exists in your current directory.
+
+=item C<Could not locate configuration file %s>
+
+There was not a config file at the location you specified.
+
+=item C<Could not read configuration file %s>
+
+Your $HOME/.module-template/config or command line specified config file is unreadable.
+
+=item C<Directory %s exists. Manually remove this directory before proceeding.>
 
 module-template will not overwrite an existing .module-template directory in your home.
 

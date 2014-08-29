@@ -14,3 +14,6 @@ Revision history for App::Module::Template
 
 0.05  2014-08-28 05:28
       Remove FATAL from test warnings. Update templates to reflect same.
+
+0.06  2014-08-29 00:56
+      Add -m switch to set module name.

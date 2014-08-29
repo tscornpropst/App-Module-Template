@@ -3,29 +3,34 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 
 use File::Path qw/remove_tree/;
 use File::Spec;
 
-@ARGV = (
+ok( @ARGV = (
     '-t',
     File::Spec->abs2rel( File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ) ),
     '-c',
     File::Spec->abs2rel( File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'config' ) ),
+    '-m',
     'Some::Test',
-);
+), 'set @ARGV' );
 
 use_ok( 'App::Module::Template', 'run' );
 
 ok( my $module_dir = File::Spec->catdir( File::Spec->curdir, 'Some-Test' ), 'set module directory' );
 
 # make sure we have a clean environment
-if ( -d $module_dir ) { remove_tree($module_dir); };
+SKIP: {
+    skip( 'module directory does not exist', 1 ) unless -d $module_dir;
+    ok( remove_tree($module_dir), 'removing module directory' );
+}
 
 ok( run(@ARGV), 'run() w/ module name' );
 
-ok( remove_tree($module_dir), 'removing module directory' );
-
-is( -d $module_dir, undef, 'module directory removed' );
+SKIP: {
+    skip( 'module directory does not exist', 1 ) unless -d $module_dir;
+    ok( remove_tree($module_dir), 'removing module directory' );
+}
