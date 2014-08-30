@@ -17,3 +17,6 @@ Revision history for App::Module::Template
 
 0.06  2014-08-29 00:56
       Add -m switch to set module name.
+
+0.07  2014-08-30 13:38
+      Update skip test count in run-inithome.t. Correct path setting in _get_template_path().

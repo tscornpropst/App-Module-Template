@@ -5,7 +5,7 @@ use 5.016;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base qw(Exporter);
 
@@ -187,7 +187,7 @@ sub _get_template_path {
         $template_dir = $opt;
     }
     else {
-        $template_dir  = File::Spec->catdir( File::HomeDir->my_home(), '.module-template/templates' );
+        $template_dir  = File::Spec->catdir( File::HomeDir->my_home(), '.module-template', 'templates' );
 
         unless ( -d $template_dir ) {
             # initialize .module-template in user's home directory
