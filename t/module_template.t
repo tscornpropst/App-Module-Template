@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 26;
 use Test::Exception;
 
 use File::HomeDir;
@@ -51,6 +51,7 @@ ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'critic.t' ), 'critic.t e
 ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'perlcritic.rc' ), 'perlcritic.rc exists' );
 ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'pod-coverage.t' ), 'pod-coverage.t exists' );
 ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'release', 'pod-syntax.t' ), 'pod-syntax.t exists' );
+ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'release', 'kwalitee.t' ), 'kwalitee.t exists' );
 
 SKIP: {
     skip( "test doesn't exist", 1) unless -d $test_dir;

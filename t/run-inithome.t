@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 29;
+use Test::More tests => 30;
 use Test::Exception;
 
 use File::HomeDir;
@@ -49,6 +49,7 @@ SKIP: {
     ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'perlcritic.rc' ), 'perlcritic.rc exists' );
     ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'author', 'pod-coverage.t' ), 'pod-coverage.t exists' );
     ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'release', 'pod-syntax.t' ), 'pod-syntax.t exists' );
+    ok( -f File::Spec->catfile( $tmpl_dir, 'xt', 'release', 'kwalitee.t' ), 'kwalitee.t exists' );
 
     # run again when directory exists
     ok( remove_tree($module_dir), 'removing module directory' );

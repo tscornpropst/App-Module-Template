@@ -26,3 +26,5 @@ Revision history for App::Module::Template
 
 0.09  2014-08-30 23:07
       Update critic policy to be compatible with perlmodstyle. Update templates. 
+0.10  2014-08-31 13:22
+      Add kwalitee.t template in xt/release.

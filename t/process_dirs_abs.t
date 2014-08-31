@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 31;
+use Test::More tests => 32;
 use Test::Exception;
 
 use File::Path qw/remove_tree make_path/;
@@ -52,6 +52,7 @@ ok( -f File::Spec->catfile( $abs_output_path, 'xt', 'author', 'pod-coverage.t' )
 ok( -f File::Spec->catfile( $abs_output_path, 'xt', 'author', 'critic.t' ), 'critic.t exists' );
 ok( -f File::Spec->catfile( $abs_output_path, 'xt', 'author', 'perlcritic.rc' ), 'perlcritic.rc exists' );
 ok( -f File::Spec->catfile( $abs_output_path, 'xt', 'release', 'pod-syntax.t' ), 'pod-syntax.t exists' );
+ok( -f File::Spec->catfile( $abs_output_path, 'xt', 'release', 'kwalitee.t' ), 'kwalitee.t exists' );
 
 ok( remove_tree($abs_output_path), 'removing output path' );
 

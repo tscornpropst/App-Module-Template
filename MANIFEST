@@ -18,6 +18,7 @@ t/.module-template/templates/t/00-load.t
 t/.module-template/templates/xt/author/critic.t
 t/.module-template/templates/xt/author/perlcritic.rc
 t/.module-template/templates/xt/author/pod-coverage.t
+t/.module-template/templates/xt/release/kwalitee.t
 t/.module-template/templates/xt/release/pod-syntax.t
 t/00-load.t
 t/01-load.t
@@ -47,4 +48,5 @@ t/write_tmpl_file.t
 xt/author/critic.t
 xt/author/perlcritic.rc
 xt/author/pod-coverage.t
+xt/release/kwalitee.t
 xt/release/pod-syntax.t

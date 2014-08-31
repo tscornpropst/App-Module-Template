@@ -5,7 +5,7 @@ use 5.016;
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use base qw(Exporter);
 
@@ -305,7 +305,7 @@ App::Module::Template - Perl module scaffolding with Template Toolkit
 
 =head1 VERSION
 
-This documentation refers to App::Module::Template version 0.01.
+This documentation refers to App::Module::Template version 0.10.
 
 =head1 SYNOPSIS
 
