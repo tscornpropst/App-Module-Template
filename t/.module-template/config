@@ -3,7 +3,7 @@ email            = author@example.com
 support_email    = support@example.com
 min_perl_version = 5.016
 eumm_version     = 6.63
-license_type     = Artistic_2_0
+license_type     = artistic_2
 license_body     =<<END_OF_LICENSE
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a

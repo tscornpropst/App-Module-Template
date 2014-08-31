@@ -5,7 +5,7 @@ use 5.016;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use base qw(Exporter);
 
@@ -85,15 +85,16 @@ sub run {
     # don't need this in the $tmpl_vars
     delete $cfg->{template_toolkit};
 
+    my $dirs = _get_module_dirs( $module );
+
     # Template Vars
     $tmpl_vars = $cfg;
     $tmpl_vars->{module} = $module;
     $tmpl_vars->{today} = strftime('%Y-%m-%d', localtime());
     $tmpl_vars->{year} = strftime('%Y', localtime());
+    $tmpl_vars->{module_path} = File::Spec->catfile( @{$dirs}, $file );
 
     _process_dirs($tt2, $tmpl_vars, $template_dir, $template_dir);
-
-    my $dirs = _get_module_dirs( $module );
 
     # add the distribution dir to the front so our module ends up in the
     # right place

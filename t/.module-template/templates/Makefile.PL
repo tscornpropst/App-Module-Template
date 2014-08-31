@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker [% eumm_version %];
 
 my %WriteMakefileArgs = (
     NAME                  => '[% module %]',
-    AUTHOR                => q{[% author %] [% email %]},
+    AUTHOR                => '[% author %] <[% email %]>',
     VERSION_FROM          => '[% module_path %]',
     ABSTRACT_FROM         => '[% module_path %]',
     LICENSE               => '[% license_type %]',
