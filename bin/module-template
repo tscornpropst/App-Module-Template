@@ -113,15 +113,15 @@ None reported.
 
 No bugs have been reported.
 
-Please report any issues or feature requests to C<tscornpropst@gmail.com>. Patches are welcome.
+Please report any issues or feature requests to L<https://github.com/tscornpropst/App-Module-Template/issues>. Patches are welcome.
 
 =head1 AUTHOR
 
-Trevor S. Cornpropst C<< tscornpropst@gmail.com >>
+Trevor S. Cornpropst <tscornpropst@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Trevor S. Cornpropst C<< tscornpropst@gmail.com >>. All rights reserved.
+Copyright (c) 2014, Trevor S. Cornpropst <tscornpropst@gmail.com>. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
