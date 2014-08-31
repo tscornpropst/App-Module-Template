@@ -327,6 +327,10 @@ This function is called by module-template to execute logic of the program.
 
 =back
 
+=head1 DIAGNOSTICS
+
+None.
+
 =head1 CONFIGURATION AND ENVIRONMENT
 
 App::Module::Template is configured by ~/.module-template/config. See module-template for more information.
