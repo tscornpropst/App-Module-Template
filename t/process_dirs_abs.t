@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 32;
+use Test::More tests => 34;
 use Test::Exception;
 
 use File::Path qw/remove_tree make_path/;
@@ -12,9 +12,13 @@ use Template;
 
 use_ok( 'App::Module::Template', '_process_dirs' );
 
-ok( my $abs_tmpl_path = File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path' );
+ok( my $a1 = File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path' );
 
-ok( my $abs_output_path = File::Spec->catdir( File::Spec->curdir, 'test_dir' ), 'set output path' );
+ok( my $abs_tmpl_path = File::Spec->rel2abs( $a1 ), 'set absolute template path' );
+
+ok( my $a2 = File::Spec->catdir( File::Spec->curdir, 'test_dir' ), 'set output path' );
+
+ok( my $abs_output_path = File::Spec->rel2abs( $a2 ), 'set absolute output path' );
 
 ok( my $abs_tt2 = Template->new({ABSOLUTE => 1, OUTPUT_PATH => $abs_output_path}), 'create absolute TT2 object' );
 
@@ -24,9 +28,13 @@ ok( my $cant_read = File::Spec->catdir( File::Spec->curdir, 'cant_read' ), 'set 
 
 ok( make_path($cant_read), 'create cant_read' );
 
-ok( chmod(oct(0400), $cant_read), 'make cant_read unreadable' );
+SKIP: {
+    skip( 'Running under windows', 2 ) if $^O eq 'MSWin32';
 
-throws_ok{ _process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $cant_read) } qr/\ACouldn't open directory/, 'process_files() fails on unreadable template path';
+    ok( chmod(oct(0400), $cant_read), 'make cant_read unreadable' );
+
+    throws_ok{ _process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $cant_read) } qr/\ACouldn't open directory/, '_process_dirs() fails on unreadable output path';
+}
 
 ok( remove_tree($cant_read), 'removing cant_read path' );
 

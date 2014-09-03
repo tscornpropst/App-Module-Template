@@ -226,8 +226,7 @@ sub _process_dirs {
         while ( my $file = readdir $dir ) {
             next if $file eq '.' or $file eq '..';
 
-            # File::Spec->catfile() is too helpful here, goin' old school
-            my $target = "$source/$file";
+            my $target = File::Spec->catfile($source, $file);
 
             _process_dirs($tt2, $tmpl_vars, $template_dir, $target);
         }

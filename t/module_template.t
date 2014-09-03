@@ -33,7 +33,7 @@ ok( my $mt_test_dir = File::Spec->catdir( $test_dir, '.module-template' ), 'set 
 
 is( module_template($test_dir), $mt_test_dir, 'module_template() w/ test dir' );
 
-throws_ok{ module_template($test_dir) } qr/$mt_test_dir/, 'fails on existing directory';
+throws_ok{ module_template($test_dir) } qr/Directory/, 'fails on existing directory';
 
 ok( my $tmpl_dir = File::Spec->catdir( $mt_test_dir, 'templates' ), 'set template dir' );
 

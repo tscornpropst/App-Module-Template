@@ -11,9 +11,9 @@ use Template;
 
 use_ok( 'App::Module::Template', '_process_dirs' );
 
-ok( my $rel_tmpl_path = File::Spec->abs2rel( File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'templates' ) ), 'set relative template path' );
+ok( my $rel_tmpl_path = File::Spec->catfile( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set relative template path' );
 
-ok( my $rel_output_path = File::Spec->abs2rel( File::Spec->catdir( File::Spec->curdir, 'test_dir' ) ), 'set relative output path' );
+ok( my $rel_output_path = File::Spec->catdir( File::Spec->curdir, 'test_dir' ), 'set relative output path' );
 
 ok( my $rel_tt2 = Template->new({RELATIVE => 1, OUTPUT_PATH => $rel_output_path}), 'create relative TT2 object' );
 
