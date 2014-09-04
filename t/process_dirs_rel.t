@@ -22,7 +22,7 @@ ok( my $tmpl_vars = {}, 'set $tmpl_vars' );
 ok( _process_dirs($rel_tt2, $tmpl_vars, $rel_tmpl_path, $rel_tmpl_path), '_process_dirs() w/ relative paths' );
 
 ok( -d File::Spec->catdir( $rel_output_path, 'bin' ), 'bin exists' );
-ok( -d File::Spec->catdir( $rel_output_path, 'lib' ), 'bin exists' );
+ok( -d File::Spec->catdir( $rel_output_path, 'lib' ), 'lib exists' );
 ok( -d File::Spec->catdir( $rel_output_path, 't' ), 't exists' );
 ok( -d File::Spec->catdir( $rel_output_path, 'xt' ), 'xt exists' );
 ok( -d File::Spec->catdir( $rel_output_path, 'xt', 'author' ), 'xt/author exists' );

@@ -5,7 +5,7 @@ use 5.016;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use base qw(Exporter);
 
@@ -13,7 +13,6 @@ use App::Module::Template::Initialize;
 
 use Carp;
 use Config::General;
-use File::Basename;
 use File::Copy;
 use File::HomeDir;
 use File::Path qw/make_path/;
@@ -248,7 +247,8 @@ sub _process_dirs {
 sub _process_file {
     my ($template_dir, $source_file) = @_;
 
-    my ($stub) = $source_file =~ m{\A$template_dir/(.*)\z}mosx;
+    # regex matches paths on *nix or *dos
+    my ($stub) = $source_file =~ m{\A$template_dir[/\\](.*)\z}mosx;
 
     return $stub;
 }
@@ -304,7 +304,7 @@ App::Module::Template - Perl module scaffolding with Template Toolkit
 
 =head1 VERSION
 
-This documentation refers to App::Module::Template version 0.10.
+This documentation refers to App::Module::Template version 0.11.
 
 =head1 SYNOPSIS
 
@@ -341,8 +341,6 @@ App::Module::Template is configured by ~/.module-template/config. See module-tem
 =item * Carp
 
 =item * Config::General
-
-=item * File::Basename
 
 =item * File::Copy
 

@@ -9,7 +9,7 @@ use File::Spec;
 
 use_ok( 'App::Module::Template', '_process_file' );
 
-ok( my $rel_tmpl_path = File::Spec->abs2rel( File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ) ), 'set template path' );
+ok( my $rel_tmpl_path = File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path' );
 
 ok( my $tmpl_file = File::Spec->catfile('t', '00-load.t' ), 'set template file' );
 

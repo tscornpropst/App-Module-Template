@@ -3,13 +3,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 use File::Spec;
 
 use_ok( 'App::Module::Template', '_process_file' );
 
-ok( my $abs_tmpl_path = File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path'
+ok( my $atp = File::Spec->catdir( File::Spec->curdir, 't', '.module-template', 'templates' ), 'set template path'
 );
+
+ok( my $abs_tmpl_path = File::Spec->rel2abs( $atp ), 'set absolute template path' );
 
 ok( my $tmpl_file = File::Spec->catfile('t', '00-load.t' ), 'set template file' );
 

@@ -43,7 +43,7 @@ is( -d $cant_read, undef, 'cant_read path is removed' );
 ok( _process_dirs($abs_tt2, $tmpl_vars, $abs_tmpl_path, $abs_tmpl_path), '_process_dirs() w/ absolute paths' );
 
 ok( -d File::Spec->catdir( $abs_output_path, 'bin' ), 'bin exists' );
-ok( -d File::Spec->catdir( $abs_output_path, 'lib' ), 'bin exists' );
+ok( -d File::Spec->catdir( $abs_output_path, 'lib' ), 'lib exists' );
 ok( -d File::Spec->catdir( $abs_output_path, 't' ), 't exists' );
 ok( -d File::Spec->catdir( $abs_output_path, 'xt' ), 'xt exists' );
 ok( -d File::Spec->catdir( $abs_output_path, 'xt', 'author' ), 'xt/author exists' );

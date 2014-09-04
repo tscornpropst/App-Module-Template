@@ -28,3 +28,7 @@ Revision history for App::Module::Template
       Update critic policy to be compatible with perlmodstyle. Update templates. 
 0.10  2014-08-31 13:22
       Add kwalitee.t template in xt/release. Fix bug with absolute path handling      on Windows. Updated tests.
+
+0.11  2014-09-03 23:22
+      Remove unused dependency File::Basename. Tweak tests for Win32. Update
+      path regex in _process_file to work under Win32 or *nix.

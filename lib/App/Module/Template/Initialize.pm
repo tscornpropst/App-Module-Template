@@ -3,7 +3,7 @@ package App::Module::Template::Initialize;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use base qw(Exporter);
 
@@ -34,7 +34,7 @@ App::Module::Template::Initialize - Templates to pre-populate template directory
 
 =head1 VERSION
 
-This documentation refers to App::Module::Template::Initialize version 0.10.
+This documentation refers to App::Module::Template::Initialize version 0.11.
 
 =head1 SYNOPSIS
 
